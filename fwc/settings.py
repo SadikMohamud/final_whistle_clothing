@@ -27,6 +27,10 @@ IS_PRODUCTION = bool(os.getenv("DATABASE_URL") or os.getenv("DYNO"))
 default_debug = "False" if IS_PRODUCTION else "True"
 DEBUG = os.getenv("DJANGO_DEBUG", default_debug).lower() == "true"
 
+AUTH_RATE_LIMIT_WINDOW_SECONDS = int(os.getenv("AUTH_RATE_LIMIT_WINDOW_SECONDS", "300"))
+AUTH_LOGIN_MAX_ATTEMPTS = int(os.getenv("AUTH_LOGIN_MAX_ATTEMPTS", "5"))
+AUTH_REGISTER_MAX_ATTEMPTS = int(os.getenv("AUTH_REGISTER_MAX_ATTEMPTS", "6"))
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-change-me" if not IS_PRODUCTION else "").strip()
 if IS_PRODUCTION and not SECRET_KEY:
 	raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set in production.")

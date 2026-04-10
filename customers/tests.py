@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
@@ -10,9 +11,13 @@ from django.urls import reverse
 		"default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
 		"staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 	},
+	AUTH_RATE_LIMIT_WINDOW_SECONDS=300,
+	AUTH_LOGIN_MAX_ATTEMPTS=3,
+	AUTH_REGISTER_MAX_ATTEMPTS=3,
 )
 class CustomerAuthFlowTests(TestCase):
 	def setUp(self):
+		cache.clear()
 		self.user_email = "testuser@example.com"
 		self.user_password = "StrongPass123!"
 		self.user = get_user_model().objects.create_user(
@@ -65,3 +70,48 @@ class CustomerAuthFlowTests(TestCase):
 	def test_allauth_password_reset_page_renders(self):
 		response = self.client.get("/accounts/password/reset/")
 		self.assertEqual(response.status_code, 200)
+
+	def test_login_rate_limit_blocks_after_failed_attempts(self):
+		for _ in range(3):
+			response = self.client.post(
+				reverse("customer_login"),
+				{"email": self.user_email, "password": "wrong-pass"},
+			)
+
+		self.assertEqual(response.status_code, 429)
+		self.assertContains(response, "Too many login attempts", status_code=429)
+
+	def test_login_success_clears_failure_counter(self):
+		self.client.post(
+			reverse("customer_login"),
+			{"email": self.user_email, "password": "wrong-pass"},
+		)
+
+		good_response = self.client.post(
+			reverse("customer_login"),
+			{"email": self.user_email, "password": self.user_password},
+		)
+		self.assertEqual(good_response.status_code, 302)
+		self.client.get(reverse("customer_logout"))
+
+		followup_response = self.client.post(
+			reverse("customer_login"),
+			{"email": self.user_email, "password": "wrong-pass"},
+		)
+		self.assertEqual(followup_response.status_code, 200)
+		self.assertContains(followup_response, "Invalid email or password", status_code=200)
+
+	def test_register_rate_limit_blocks_after_failed_attempts(self):
+		payload = {
+			"email": "newuser@example.com",
+			"password": "", 
+			"password_confirm": "",
+			"first_name": "New",
+			"last_name": "User",
+		}
+
+		for _ in range(3):
+			response = self.client.post(reverse("customer_register"), payload)
+
+		self.assertEqual(response.status_code, 429)
+		self.assertContains(response, "Too many signup attempts", status_code=429)

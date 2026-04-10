@@ -3,6 +3,7 @@ Views for customer authentication and profile management
 """
 
 from django.shortcuts import render, redirect
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -13,6 +14,7 @@ from django.views.decorators.cache import never_cache
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
+from django.core.cache import cache
 from allauth.socialaccount.models import SocialAccount, SocialApp
 
 from .models import (
@@ -25,6 +27,36 @@ from .models import (
 from .address_formats import get_address_format, get_browser_language_to_country
 
 
+def _client_ip(request) -> str:
+    forwarded_for = (request.META.get('HTTP_X_FORWARDED_FOR') or '').strip()
+    if forwarded_for:
+        return forwarded_for.split(',')[0].strip()
+    return (request.META.get('REMOTE_ADDR') or 'unknown').strip()
+
+
+def _rate_limit_key(prefix: str, request, identifier: str = '') -> str:
+    client_ip = _client_ip(request)
+    normalized_identifier = (identifier or '').strip().lower()[:120]
+    if normalized_identifier:
+        return f"auth_rl:{prefix}:{client_ip}:{normalized_identifier}"
+    return f"auth_rl:{prefix}:{client_ip}"
+
+
+def _too_many_attempts(key: str, max_attempts: int) -> bool:
+    attempts = int(cache.get(key, 0) or 0)
+    return attempts >= max_attempts
+
+
+def _record_auth_failure(key: str) -> int:
+    attempts = int(cache.get(key, 0) or 0) + 1
+    cache.set(key, attempts, timeout=max(1, int(settings.AUTH_RATE_LIMIT_WINDOW_SECONDS)))
+    return attempts
+
+
+def _clear_auth_failures(key: str) -> None:
+    cache.delete(key)
+
+
 @never_cache
 def register_view(request):
     """User registration with email"""
@@ -35,6 +67,18 @@ def register_view(request):
     
     if request.method == 'POST':
         email = request.POST.get('email', '').strip()
+        rate_limit_key = _rate_limit_key('register', request, email or 'anonymous')
+        max_register_attempts = max(1, int(getattr(settings, 'AUTH_REGISTER_MAX_ATTEMPTS', 6)))
+
+        if _too_many_attempts(rate_limit_key, max_register_attempts):
+            return render(request, 'customers/signup.html', {
+                'errors': ['Too many signup attempts. Please try again in a few minutes.'],
+                'email': email,
+                'first_name': request.POST.get('first_name', '').strip(),
+                'last_name': request.POST.get('last_name', '').strip(),
+                'google_social_app': google_social_app,
+            }, status=429)
+
         password = request.POST.get('password', '')
         password_confirm = request.POST.get('password_confirm', '')
         first_name = request.POST.get('first_name', '').strip()
@@ -61,13 +105,16 @@ def register_view(request):
             errors.append('Passwords do not match')
         
         if errors:
+            attempts = _record_auth_failure(rate_limit_key)
+            if attempts >= max_register_attempts:
+                errors = ['Too many signup attempts. Please try again in a few minutes.']
             return render(request, 'customers/signup.html', {
                 'errors': errors,
                 'email': email,
                 'first_name': first_name,
                 'last_name': last_name,
                 'google_social_app': google_social_app,
-            })
+            }, status=429 if attempts >= max_register_attempts else 200)
         
         # Create user
         try:
@@ -88,13 +135,24 @@ def register_view(request):
                 profile.oauth_provider = 'email'
                 profile.save()
 
+            _clear_auth_failures(rate_limit_key)
+
             return render(request, 'customers/email_confirm.html', {
                 'email': email,
             })
         
         except Exception as e:
-            errors.append(f'Registration failed: {str(e)}')
-            return render(request, 'customers/signup.html', {'errors': errors})
+            attempts = _record_auth_failure(rate_limit_key)
+            errors.append('Registration failed. Please try again.')
+            if attempts >= max_register_attempts:
+                errors = ['Too many signup attempts. Please try again in a few minutes.']
+            return render(request, 'customers/signup.html', {
+                'errors': errors,
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+                'google_social_app': google_social_app,
+            }, status=429 if attempts >= max_register_attempts else 200)
 
     return render(request, 'customers/signup.html', {
         'google_social_app': google_social_app,
@@ -114,20 +172,37 @@ def login_view(request):
     
     if request.method == 'POST':
         email = request.POST.get('email', '').strip()
+        rate_limit_key = _rate_limit_key('login', request, email or 'anonymous')
+        max_login_attempts = max(1, int(getattr(settings, 'AUTH_LOGIN_MAX_ATTEMPTS', 5)))
+
+        if _too_many_attempts(rate_limit_key, max_login_attempts):
+            return render(request, 'customers/login.html', {
+                'error': 'Too many login attempts. Please try again in a few minutes.',
+                'email': email,
+                'google_social_app': google_social_app,
+            }, status=429)
+
         password = request.POST.get('password', '')
         
         user = authenticate(username=email, password=password)
         
         if user is not None:
+            _clear_auth_failures(rate_limit_key)
             login(request, user)
             next_url = request.GET.get('next', 'customer_profile')
             return redirect(next_url)
         else:
+            attempts = _record_auth_failure(rate_limit_key)
+            error_message = 'Invalid email or password'
+            status_code = 200
+            if attempts >= max_login_attempts:
+                error_message = 'Too many login attempts. Please try again in a few minutes.'
+                status_code = 429
             return render(request, 'customers/login.html', {
-                'error': 'Invalid email or password',
+                'error': error_message,
                 'email': email,
                 'google_social_app': google_social_app,
-            })
+            }, status=status_code)
 
     return render(request, 'customers/login.html', {
         'google_social_app': google_social_app,
