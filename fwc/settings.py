@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from urllib.parse import urlparse
 
+from django.core.exceptions import ImproperlyConfigured
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,10 +22,19 @@ def _load_env_file(path: Path) -> None:
 
 _load_env_file(BASE_DIR / ".env")
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-change-me")
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 
-allowed_hosts_raw = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,0.0.0.0,.herokuapp.com")
+IS_PRODUCTION = bool(os.getenv("DATABASE_URL") or os.getenv("DYNO"))
+default_debug = "False" if IS_PRODUCTION else "True"
+DEBUG = os.getenv("DJANGO_DEBUG", default_debug).lower() == "true"
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-change-me" if not IS_PRODUCTION else "").strip()
+if IS_PRODUCTION and not SECRET_KEY:
+	raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set in production.")
+
+allowed_hosts_default = "127.0.0.1,localhost" if not IS_PRODUCTION else ""
+allowed_hosts_raw = os.getenv("DJANGO_ALLOWED_HOSTS", allowed_hosts_default).strip()
+if IS_PRODUCTION and not allowed_hosts_raw:
+	raise ImproperlyConfigured("DJANGO_ALLOWED_HOSTS must be set in production.")
 ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_raw.split(",") if h.strip()]
 
 INSTALLED_APPS = [
@@ -230,14 +241,30 @@ if not EMAIL_BACKEND:
 # Security & SEO Headers
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = "DENY"
+if IS_PRODUCTION:
+	SECURE_SSL_REDIRECT = True
+	SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+	SESSION_COOKIE_SECURE = True
+	CSRF_COOKIE_SECURE = True
+	SECURE_HSTS_SECONDS = 31536000
+	SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+	SECURE_HSTS_PRELOAD = True
+	SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
+csrf_trusted_origins_default = (
+	"http://127.0.0.1:8000,http://localhost:8000" if not IS_PRODUCTION else ""
+)
 CSRF_TRUSTED_ORIGINS = [
 	origin.strip()
 	for origin in os.getenv(
 		"DJANGO_CSRF_TRUSTED_ORIGINS",
-		"https://*.herokuapp.com,https://finalwhistleclothing-842499dd40b6.herokuapp.com",
+		csrf_trusted_origins_default,
 	).split(",")
 	if origin.strip()
 ]
+
+if IS_PRODUCTION and not CSRF_TRUSTED_ORIGINS:
+	raise ImproperlyConfigured("DJANGO_CSRF_TRUSTED_ORIGINS must be set in production.")
 
 SECURE_CONTENT_SECURITY_POLICY = {
 	"default-src": ("'self'",),
