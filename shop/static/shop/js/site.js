@@ -273,7 +273,8 @@ const translations = {
   }
 };
 
-function applyLanguage(lang) {
+function applyLanguage(lang, options = {}) {
+  const shouldSyncSession = options.syncSession !== false;
   const safeLang = translations[lang] ? lang : 'en';
   root.setAttribute('lang', safeLang);
   root.setAttribute('data-lang', safeLang);
@@ -299,7 +300,9 @@ function applyLanguage(lang) {
   }
 
   safeStorageSet('fwcLang', safeLang);
-  syncLanguageSession(safeLang);
+  if (shouldSyncSession) {
+    syncLanguageSession(safeLang);
+  }
   syncThemeToggleState();
 }
 
@@ -320,7 +323,13 @@ function syncThemeToggleState() {
 }
 
 function renderThemeToggleSwitch() {
-  if (!themeToggle || themeToggle.classList.contains('switch')) {
+  if (!themeToggle) {
+    themeSwitchInput = document.getElementById('themeSwitch');
+    return;
+  }
+
+  if (themeToggle.classList.contains('switch')) {
+    themeSwitchInput = themeToggle.querySelector('#themeSwitch');
     return;
   }
 
@@ -366,7 +375,7 @@ function renderThemeToggleSwitch() {
 if (langToggle) {
   langToggle.addEventListener('click', () => {
     const current = root.getAttribute('data-lang') || 'nl';
-    applyLanguage(current === 'nl' ? 'en' : 'nl');
+    applyLanguage(current === 'nl' ? 'en' : 'nl', { syncSession: true });
   });
 }
 
@@ -378,7 +387,7 @@ const initialTheme = safeStorageGet('fwcTheme') || 'dark';
 const serverLang = root.getAttribute('data-lang');
 const initialLang = safeStorageGet('fwcLang') || (translations[serverLang] ? serverLang : 'en');
 applyTheme(initialTheme);
-applyLanguage(initialLang);
+applyLanguage(initialLang, { syncSession: false });
 
 function ensureGlobalBackButton() {
   // Don't show back button on homepage
