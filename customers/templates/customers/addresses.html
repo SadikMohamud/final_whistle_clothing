@@ -1,0 +1,300 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl" data-lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addresses | Final Whistle Clothing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+    <style>
+        .account-topbar {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+        }
+
+        .addresses-shell {
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 84px 14px 28px;
+        }
+
+        .addresses-header {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .addresses-title {
+            font-family: var(--font-display);
+            font-size: clamp(30px, 13vw, 46px);
+            line-height: 0.95;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: transform 0.2s, border-color 0.2s, background 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--volt);
+            color: var(--black);
+            border-color: var(--volt);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            background: var(--white);
+            border-color: var(--white);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--volt);
+            color: var(--volt);
+        }
+
+        .btn-danger {
+            background: rgba(255, 107, 107, 0.15);
+            color: #ff8b8b;
+            border-color: rgba(255, 107, 107, 0.45);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 107, 107, 0.24);
+        }
+
+        .messages {
+            margin-bottom: 16px;
+        }
+
+        .alert {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .alert-success {
+            background: rgba(245, 245, 240, 0.12);
+            color: var(--volt);
+        }
+
+        .alert-error {
+            background: rgba(255, 107, 107, 0.14);
+            color: #ff8b8b;
+        }
+
+        .addresses-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .address-card {
+            position: relative;
+            border: 1px solid var(--border);
+            background: rgba(8, 8, 8, 0.9);
+            padding: 14px;
+        }
+
+        .address-card.default {
+            border-color: var(--volt);
+            box-shadow: inset 0 0 0 1px rgba(245, 245, 240, 0.2);
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-family: var(--font-display);
+            font-weight: 700;
+            background: var(--volt);
+            color: var(--black);
+        }
+
+        .address-type {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-display);
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(245, 245, 240, 0.75);
+        }
+
+        .recipient {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .address {
+            color: rgba(245, 245, 240, 0.72);
+            line-height: 1.6;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .country {
+            color: var(--volt);
+            font-weight: 600;
+        }
+
+        .contact {
+            color: rgba(245, 245, 240, 0.56);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .address-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .no-addresses {
+            border: 1px solid var(--border);
+            padding: 22px 16px;
+            text-align: center;
+            background: rgba(8, 8, 8, 0.9);
+        }
+
+        .no-addresses p {
+            margin-bottom: 16px;
+            color: rgba(245, 245, 240, 0.6);
+            line-height: 1.5;
+        }
+
+        @media (min-width: 640px) {
+            .addresses-shell {
+                padding: 90px 20px 34px;
+            }
+
+            .addresses-header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+            }
+
+            .addresses-header .btn {
+                width: auto;
+            }
+
+            .address-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .addresses-shell {
+                padding: 96px 32px 42px;
+            }
+
+            .addresses-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 16px;
+            }
+
+            .address-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <div class="account-topbar">
+        <button type="button" id="langToggle" class="toggle-chip">NL</button>
+        <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Donker</button>
+    </div>
+
+    <main class="addresses-shell">
+        <section class="addresses-header">
+            <h1 class="addresses-title">Saved Addresses</h1>
+            <a href="{% url 'customer_add_address' %}" class="btn btn-primary">Add New Address</a>
+        </section>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if addresses %}
+            <section class="addresses-grid">
+                {% for address in addresses %}
+                    <article class="address-card {% if address.is_default %}default{% endif %}">
+                        {% if address.is_default %}
+                            <span class="badge">Default</span>
+                        {% endif %}
+
+                        <div class="address-type">{{ address.get_address_type_display|title }}</div>
+
+                        <p class="recipient">{{ address.first_name }} {{ address.last_name }}</p>
+                        <p class="address">
+                            {{ address.get_full_address }}<br>
+                            <span class="country">{{ address.country }}</span>
+                        </p>
+                        <p class="contact">
+                            <span>{{ address.email }}</span><br>
+                            <span>{{ address.phone }}</span>
+                        </p>
+
+                        <div class="address-actions">
+                            <a href="#" class="btn btn-secondary">Edit</a>
+                            <a href="#" class="btn btn-danger" onclick="return confirm('Delete this address?')">Delete</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </section>
+        {% else %}
+            <section class="no-addresses">
+                <p>You have not added any addresses yet.</p>
+                <a href="{% url 'customer_add_address' %}" class="btn btn-primary">Add Your First Address</a>
+            </section>
+        {% endif %}
+    </main>
+
+    <script src="{% static 'shop/js/site.js' %}"></script>
+</body>
+</html>

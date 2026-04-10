@@ -1,0 +1,576 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl" data-lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Premium Dutch streetwear. Final Whistle Clothing — refined everyday pieces with SS26 energy. Gratis verzending, morgen in huis.">
+<meta name="keywords" content="streetwear, Nederlandse mode, Final Whistle Clothing, fashion, drops, limited edition, contemporary basics">
+<meta name="language" content="nl">
+<meta name="geo.placename" content="Netherlands">
+<meta name="geo.region" content="NL">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<title data-i18n="page_title">Final Whistle Clothing | Premium Dutch Streetwear</title>
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{% url 'home' %}">
+
+<!-- Language Alternatives (hreflang) -->
+<link rel="alternate" hreflang="nl" href="{% url 'home' %}">
+<link rel="alternate" hreflang="en" href="{% url 'home' %}?lang=en">
+<link rel="alternate" hreflang="x-default" href="{% url 'home' %}">
+
+<!-- Preconnect to external resources -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700;1,900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<!-- Open Graph Meta Tags (Social Sharing) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Final Whistle Clothing | Dutch Streetwear">
+<meta property="og:description" content="Refined Dutch streetwear. SS26 collectie nu beschikbaar — gratis verzending boven €100.">
+<meta property="og:url" content="{% url 'home' %}">
+<meta property="og:image" content="https://placehold.co/1200x630/111111/C8F400?text=Final+Whistle+Clothing">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="nl_NL">
+<meta property="og:locale:alternate" content="en_US">
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Final Whistle Clothing">
+<meta name="twitter:description" content="Premium Dutch streetwear with SS26 collection.">
+<meta name="twitter:image" content="https://placehold.co/1200x630/111111/C8F400?text=Final+Whistle+Clothing">
+
+<!-- Additional Meta Tags -->
+<meta name="author" content="Final Whistle Clothing">
+<meta name="copyright" content="© 2025 Final Whistle Clothing">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#080808">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Final Whistle Clothing",
+  "url": "{% url 'home' %}",
+  "description": "Premium Dutch streetwear brand",
+  "logo": "https://placehold.co/512x512/111111/C8F400?text=FW",
+  "sameAs": [
+    "https://www.instagram.com/finalwhistleclothing",
+    "https://www.tiktok.com/@finalwhistleclothing",
+    "https://www.youtube.com/@finalwhistleclothing"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "NL",
+    "addressLocality": "Netherlands"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "email": "contact@finalwhistleclothing.com"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Final Whistle Clothing",
+  "url": "{% url 'home' %}",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{% url 'search' %}?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<!-- BreadcrumbList Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{% url 'home' %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Shop",
+      "item": "{% url 'home' %}#shop"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Collections",
+      "item": "{% url 'home' %}#collections"
+    }
+  ]
+}
+</script>
+
+<!-- FAQ Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Wat is Final Whistle Clothing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Final Whistle Clothing is een premium Dutch streetwear brand. Wij bieden verfijnde, moderne kledingstukken met innovatieve designs voor dagelijks dragen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoeveel bedraagt de verzendkosten?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Wij bieden gratis verzending op alle bestellingen boven €100. Voor bestellingen onder €100 gelden normale verzendkosten."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoe lang duurt verzending?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bestel voor 22:00 en ontvang je pakket de volgende werkdag. Dit geldt standaard voor alle Nederlandse bestellingen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kan ik mijn bestelling retourneren?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, je hebt 30 dagen om je bestelling te ruilen of deze terug te sturen. Geen vragen gesteld."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Welke betaalmethoden accepteert Final Whistle Clothing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Wij accepteren iDEAL, Klarna, creditcard en meer. Alle betalingen zijn 100% veilig en versleuteld."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is Final Whistle Clothing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Final Whistle Clothing is a premium Dutch streetwear brand. We offer refined, modern pieces with innovative designs made for everyday wear."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the shipping cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We offer free shipping on all orders above €100. For orders under €100, regular shipping costs apply."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does shipping take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Order before 22:00 and receive your package the next business day. This applies standard to all Dutch orders."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I return my order?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, you have 30 days to exchange or return your order. No questions asked."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What payment methods does Final Whistle Clothing accept?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We accept iDEAL, Klarna, credit cards and more. All payments are 100% secure and encrypted."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- TICKER -->
+<div class="ticker-wrap" role="marquee">
+  <div class="ticker-track">
+    <span class="ticker-item" data-i18n="ticker_shipping">Gratis verzending vanaf €100</span>
+    <span class="ticker-item" data-i18n="ticker_collection">Nieuwe Collectie SS26</span>
+    <span class="ticker-item" data-i18n="ticker_delivery">Bestel voor 22:00, morgen in huis</span>
+    <span class="ticker-item" data-i18n="ticker_streetwear">Authentiek Dutch Streetwear</span>
+    <span class="ticker-item" data-i18n="ticker_drop">Limited Drop — Final Whistle Classics</span>
+    <span class="ticker-item" data-i18n="ticker_shipping">Gratis verzending vanaf €100</span>
+    <span class="ticker-item" data-i18n="ticker_collection">Nieuwe Collectie SS26</span>
+    <span class="ticker-item" data-i18n="ticker_delivery">Bestel voor 22:00, morgen in huis</span>
+    <span class="ticker-item" data-i18n="ticker_streetwear">Authentiek Dutch Streetwear</span>
+    <span class="ticker-item" data-i18n="ticker_drop">Limited Drop — Final Whistle Classics</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="{% url 'collection_view' 'all' %}" data-i18n="nav_shop">Shop</a>
+    <a href="{% url 'collection_view' 'all' %}#collections" data-i18n="nav_collections">Collecties</a>
+    <a href="#drops" data-i18n="nav_drops">Drops</a>
+  </div>
+  <a href="{% url 'home' %}" class="nav-logo" data-i18n="brand_logo">Final<span>.</span>Whistle</a>
+  <div class="nav-right">
+    <a href="{% url 'search' %}" data-i18n="nav_search">Zoeken</a>
+    <a href="{% url 'customer_login' %}?force=1&next={% url 'home' %}#shop" data-i18n="nav_account">Account</a>
+    <button type="button" id="langToggle" class="toggle-chip">NL</button>
+    <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Dark</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" data-parallax-root>
+  <div class="hero-bg parallax-layer" data-parallax-speed="-0.08" data-parallax-pointer="0.45"></div>
+  <div class="hero-geo parallax-layer" data-parallax-speed="-0.16" data-parallax-pointer="0.75">
+    <div class="hero-circle-inner parallax-layer" data-parallax-speed="-0.22" data-parallax-pointer="1.1"></div>
+  </div>
+  <div class="hero-glow parallax-layer" data-parallax-speed="-0.26" data-parallax-pointer="1.35"></div>
+
+  <div class="hero-content parallax-layer" data-parallax-speed="0.16" data-parallax-pointer="0.55">
+    <p class="hero-eyebrow" data-i18n="hero_eyebrow">SS26 — Nieuwe Collectie</p>
+    <h1 class="hero-headline">
+      <span data-i18n="hero_headline">Built For<br><em>The Pitch</em><br>Worn Beyond</span>
+    </h1>
+    <div class="hero-ctas">
+      <a href="{% url 'collection_view' 'all' %}" class="btn-primary">
+        <span data-i18n="cta_shop_now">Shop Nu</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="{% url 'collection_view' 'all' %}#collections" class="btn-ghost">
+        <span data-i18n="cta_view_collection">Bekijk Collectie</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-stat-row parallax-layer" data-parallax-speed="0.24" data-parallax-pointer="0.8">
+    <div class="hero-stat">
+      <div class="hero-stat-num">47+</div>
+      <div class="hero-stat-label" data-i18n="hero_stat_items">Unieke Items</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">SS26</div>
+      <div class="hero-stat-label" data-i18n="hero_stat_season">Seizoen</div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORY STRIP -->
+<div class="categories-strip">
+  <div class="categories-track">
+    <a class="cat-item" href="{% url 'collection_view' 'tshirts' %}" data-i18n="cat_tshirts">T-Shirts</a>
+    <a class="cat-item" href="{% url 'collection_view' 'hoodies' %}" data-i18n="cat_hoodies">Hoodies</a>
+    <a class="cat-item" href="{% url 'collection_view' 'tracksuits' %}" data-i18n="cat_tracksuits">Tracksuits</a>
+    <a class="cat-item" href="{% url 'collection_view' 'jackets' %}" data-i18n="cat_jackets">Jackets</a>
+    <a class="cat-item" href="{% url 'collection_view' 'shorts' %}" data-i18n="cat_shorts">Shorts</a>
+    <a class="cat-item" href="{% url 'collection_view' 'caps' %}" data-i18n="cat_caps">Caps</a>
+    <a class="cat-item" href="{% url 'collection_view' 'accessories' %}" data-i18n="cat_accessories">Accessories</a>
+    <a class="cat-item" href="{% url 'collection_view' 'sale' %}" data-i18n="cat_sale">Sale</a>
+    <!-- duplicate for seamless loop -->
+    <a class="cat-item" href="{% url 'collection_view' 'tshirts' %}" data-i18n="cat_tshirts">T-Shirts</a>
+    <a class="cat-item" href="{% url 'collection_view' 'hoodies' %}" data-i18n="cat_hoodies">Hoodies</a>
+    <a class="cat-item" href="{% url 'collection_view' 'tracksuits' %}" data-i18n="cat_tracksuits">Tracksuits</a>
+    <a class="cat-item" href="{% url 'collection_view' 'jackets' %}" data-i18n="cat_jackets">Jackets</a>
+    <a class="cat-item" href="{% url 'collection_view' 'shorts' %}" data-i18n="cat_shorts">Shorts</a>
+    <a class="cat-item" href="{% url 'collection_view' 'caps' %}" data-i18n="cat_caps">Caps</a>
+    <a class="cat-item" href="{% url 'collection_view' 'accessories' %}" data-i18n="cat_accessories">Accessories</a>
+    <a class="cat-item" href="{% url 'collection_view' 'sale' %}" data-i18n="cat_sale">Sale</a>
+  </div>
+</div>
+
+<!-- NEW ARRIVALS -->
+<section class="section" id="shop">
+  <div class="section-header">
+    <h2 class="section-title" data-i18n="new_arrivals">New <span>Arrivals</span></h2>
+    <a href="{% url 'collection_view' 'all' %}" class="section-link" data-i18n="view_all">Bekijk alles →</a>
+  </div>
+
+  <div class="product-grid">
+    {% if homepage_cards %}
+    {% for card in homepage_cards %}
+    <a
+      class="product-card fade-up"
+      href="{% if card.cta_url %}{{ card.cta_url }}{% else %}{% url 'collection_view' 'all' %}{% endif %}"
+      rel="noopener noreferrer"
+    >
+      {% if card.image %}
+      <img class="product-img" src="{{ card.image.url }}" alt="{{ card.title }} - Dutch streetwear" loading="lazy" decoding="async">
+      {% else %}
+      <img
+        class="product-img"
+        src="https://placehold.co/900x1200/111111/C8F400?text=Final+Whistle"
+        alt="{{ card.title }} placeholder image"
+        loading="lazy"
+        decoding="async"
+      >
+      {% endif %}
+      <div class="product-info">
+        <div class="product-name">{{ card.title }}</div>
+        <div class="product-price"><strong>{{ card.price_label|default:'FWC' }}</strong></div>
+      </div>
+    </a>
+    {% endfor %}
+    {% else %}
+    {% for product in products %}
+    <a
+      class="product-card fade-up"
+      href="{% url 'product_detail' product.handle %}"
+      rel="noopener noreferrer"
+    >
+      {% if product.image_url %}
+      <img class="product-img" src="{{ product.image_url }}" alt="{{ product.title }} - Dutch streetwear" loading="lazy" decoding="async">
+      {% else %}
+      <img
+        class="product-img"
+        src="https://placehold.co/900x1200/111111/C8F400?text=Final+Whistle"
+        alt="{{ product.title }} placeholder image"
+        loading="lazy"
+        decoding="async"
+      >
+      {% endif %}
+      <div class="product-info">
+        <div class="product-name">{{ product.title }}</div>
+        <div class="product-price"><strong>{{ product.currency }} {{ product.price }}</strong></div>
+      </div>
+    </a>
+    {% empty %}
+    <div class="product-card fade-up">
+      <img
+        class="product-img"
+        src="https://placehold.co/900x1200/111111/C8F400?text=Final+Whistle"
+        alt="Placeholder product image"
+        loading="lazy"
+        decoding="async"
+      >
+      <div class="product-info">
+        <div class="product-name" data-i18n="products_none">No products loaded</div>
+        <div class="product-price"><strong data-i18n="products_env">Check .env settings</strong></div>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+<!-- CAMPAIGN -->
+<section class="campaign" data-parallax-root>
+  <div class="campaign-visual">
+    <div class="campaign-big-text parallax-layer" data-parallax-speed="-0.12" data-parallax-pointer="0.7" data-i18n="campaign_mark">FW</div>
+    <div class="campaign-visual-inner parallax-layer" data-parallax-speed="0.18" data-parallax-pointer="0.9">
+      <div class="campaign-circle parallax-layer" data-parallax-speed="0.22" data-parallax-pointer="1.2">
+        <div class="campaign-circle-label">
+          <span data-i18n="campaign_circle">Born From<br><em>The Beautiful Game</em></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="campaign-content parallax-layer" data-parallax-speed="0.1" data-parallax-pointer="0.4">
+    <p class="campaign-eyebrow" data-i18n="campaign_story">Ons Verhaal</p>
+    <h2 class="campaign-heading" data-i18n="campaign_heading">Street Meets<br>Stadium</h2>
+    <p class="campaign-body" data-i18n="campaign_body">Final Whistle Clothing is born vanuit een liefde voor moderne Nederlandse street culture. Van de stad tot de straat — onze kleding is gemaakt om elke dag te dragen.</p>
+    <div class="campaign-stats">
+      <div class="stat-item">
+        <div class="stat-num">2019</div>
+        <div class="stat-label" data-i18n="campaign_stat_founded">Opgericht</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">12K+</div>
+        <div class="stat-label" data-i18n="campaign_stat_community">Community</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">NL</div>
+        <div class="stat-label" data-i18n="campaign_stat_madein">Made in</div>
+      </div>
+    </div>
+    <a href="{% url 'story' %}" class="btn-primary" data-i18n="campaign_cta">Ons Verhaal -></a>
+  </div>
+</section>
+
+<!-- COLLECTIONS -->
+<section class="section" id="collections" style="padding-top:0">
+  <div class="section-header" style="padding-top:80px">
+    <h2 class="section-title" data-i18n="shop_category">Shop Per <span>Categorie</span></h2>
+    <a href="{% url 'collection_view' 'all' %}" class="section-link" data-i18n="all_collections">Alle collecties -></a>
+  </div>
+  <div class="collections-grid">
+    <div class="collection-card fade-up" data-parallax-root>
+      <div class="collection-bg col-bg-1 parallax-layer" data-parallax-speed="-0.1" data-parallax-pointer="0.55" style="height:100%;min-height:400px;">
+        <div class="col-visual parallax-layer" data-parallax-speed="0.12" data-parallax-pointer="0.8"><span class="col-visual-text" data-i18n="col_mark_top">TOP</span></div>
+      </div>
+      <div class="collection-overlay parallax-layer" data-parallax-speed="0.08" data-parallax-pointer="0.35">
+        <h3 class="collection-name" data-i18n="col_tops_name">Tops &<br>Sweaters</h3>
+        <p class="collection-desc" data-i18n="col_tops_desc">T-shirts, hoodies, longsleeves & more</p>
+        <a href="{% url 'collection_view' 'tshirts' %}" class="collection-cta" data-i18n="collection_shop_now">Shop Nu -></a>
+      </div>
+    </div>
+    <div class="collection-card fade-up" data-parallax-root>
+      <div class="collection-bg col-bg-2 parallax-layer" data-parallax-speed="-0.1" data-parallax-pointer="0.55" style="height:100%;min-height:400px;">
+        <div class="col-visual parallax-layer" data-parallax-speed="0.12" data-parallax-pointer="0.8"><span class="col-visual-text" data-i18n="col_mark_bas">BAS</span></div>
+      </div>
+      <div class="collection-overlay parallax-layer" data-parallax-speed="0.08" data-parallax-pointer="0.35">
+        <h3 class="collection-name" data-i18n="col_bottoms_name">Bottoms &<br>Shorts</h3>
+        <p class="collection-desc" data-i18n="col_bottoms_desc">Tracksuits, shorts & joggers</p>
+        <a href="{% url 'collection_view' 'tracksuits' %}" class="collection-cta" data-i18n="collection_shop_now">Shop Nu -></a>
+      </div>
+    </div>
+    <div class="collection-card fade-up" data-parallax-root>
+      <div class="collection-bg col-bg-3 parallax-layer" data-parallax-speed="-0.1" data-parallax-pointer="0.55" style="height:100%;min-height:400px;">
+        <div class="col-visual parallax-layer" data-parallax-speed="0.12" data-parallax-pointer="0.8"><span class="col-visual-text" data-i18n="col_mark_acc">ACC</span></div>
+      </div>
+      <div class="collection-overlay parallax-layer" data-parallax-speed="0.08" data-parallax-pointer="0.35">
+        <h3 class="collection-name" data-i18n="col_accessories_name">Caps &<br>Accessoires</h3>
+        <p class="collection-desc" data-i18n="col_accessories_desc">Headwear, bags & essentials</p>
+        <a href="{% url 'collection_view' 'accessories' %}" class="collection-cta" data-i18n="collection_shop_now">Shop Nu -></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="editorial">
+  <div class="ed-item">
+    <svg class="ed-icon" viewBox="0 0 36 36" fill="none">
+      <path d="M18 3L4 10v8c0 8.28 5.96 16.03 14 18 8.04-1.97 14-9.72 14-18v-8L18 3z" stroke="var(--volt)" stroke-width="1.2" fill="none"/>
+    </svg>
+    <div class="ed-title" data-i18n="trust_shipping_title">Gratis Verzending</div>
+    <div class="ed-desc" data-i18n="trust_shipping_desc">Op alle bestellingen boven €100 — snel en betrouwbaar bezorgd.</div>
+  </div>
+  <div class="ed-item">
+    <svg class="ed-icon" viewBox="0 0 36 36" fill="none">
+      <path d="M18 3C10.27 3 4 9.27 4 17s6.27 14 14 14 14-6.27 14-14S25.73 3 18 3z" stroke="var(--volt)" stroke-width="1.2" fill="none"/>
+      <path d="M18 9v8l5 3" stroke="var(--volt)" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    <div class="ed-title" data-i18n="trust_order_title">Bestel voor 22:00</div>
+    <div class="ed-desc" data-i18n="trust_order_desc">Volgende werkdag al in huis — standaard voor alle Nederlandse bestellingen.</div>
+  </div>
+  <div class="ed-item">
+    <svg class="ed-icon" viewBox="0 0 36 36" fill="none">
+      <path d="M5 18h26M18 5v26" stroke="var(--volt)" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="18" cy="18" r="13" stroke="var(--volt)" stroke-width="1.2" fill="none"/>
+    </svg>
+    <div class="ed-title" data-i18n="trust_return_title">30 Dagen Retour</div>
+    <div class="ed-desc" data-i18n="trust_return_desc">Niet tevreden? Ruil of retourneer moeiteloos binnen 30 dagen.</div>
+  </div>
+  <div class="ed-item">
+    <svg class="ed-icon" viewBox="0 0 36 36" fill="none">
+      <rect x="4" y="8" width="28" height="20" rx="3" stroke="var(--volt)" stroke-width="1.2" fill="none"/>
+      <path d="M4 14h28" stroke="var(--volt)" stroke-width="1.2"/>
+    </svg>
+    <div class="ed-title" data-i18n="trust_payment_title">Veilig Betalen</div>
+    <div class="ed-desc" data-i18n="trust_payment_desc">iDEAL, Klarna, creditcard en meer — 100% veilig en versleuteld.</div>
+  </div>
+</div>
+
+<!-- DROPS -->
+<section class="section" id="drops" style="padding-top:24px;">
+  <div class="section-header">
+    <h2 class="section-title">Latest <span>Drops</span></h2>
+    <a href="{% url 'collection_view' 'all' %}" class="section-link">Shop all drops -></a>
+  </div>
+  <div class="collections-grid">
+    <div class="collection-card fade-up">
+      <div class="collection-overlay">
+        <h3 class="collection-name">Drop 01<br>Stadium Core</h3>
+        <p class="collection-desc">Clean silhouettes inspired by away-day culture.</p>
+        <a href="{% url 'collection_view' 'all' %}" class="collection-cta">View drop -></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="newsletter">
+  <h2 class="newsletter-heading" data-i18n="newsletter_heading">Stay in<br><span>The Game</span></h2>
+  <p class="newsletter-sub" data-i18n="newsletter_sub">Meld je aan voor vroeg toegang tot drops, exclusieve aanbiedingen & inside nieuws.</p>
+  <form class="newsletter-form" method="post" action="{% url 'newsletter_subscribe' %}">
+    {% csrf_token %}
+    <input type="hidden" name="source" value="homepage_newsletter">
+    <input name="email" type="email" placeholder="Jouw e-mailadres" data-i18n-placeholder="newsletter_placeholder" required>
+    <button type="submit" data-i18n="newsletter_button">Aanmelden</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-name">Final<span>.</span>Whistle</div>
+      <p class="footer-tagline" data-i18n="footer_tagline">Dutch streetwear. Born vanuit een liefde voor stijl — gedragen op straat.</p>
+    </div>
+    <div>
+      <div class="footer-col-title" data-i18n="footer_shop">Shop</div>
+      <ul class="footer-links">
+        <li><a href="{% url 'collection_view' 'all' %}" data-i18n="footer_shop_new">Nieuw</a></li>
+        <li><a href="{% url 'collection_view' 'tshirts' %}" data-i18n="footer_shop_tshirts">T-Shirts</a></li>
+        <li><a href="{% url 'collection_view' 'hoodies' %}" data-i18n="footer_shop_hoodies">Hoodies</a></li>
+        <li><a href="{% url 'collection_view' 'jackets' %}" data-i18n="footer_shop_jackets">Jackets</a></li>
+        <li><a href="{% url 'collection_view' 'sale' %}" data-i18n="footer_shop_sale">Sale</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title" data-i18n="footer_info">Info</div>
+      <ul class="footer-links">
+        <li><a href="#" data-i18n="footer_info_about">Over Ons</a></li>
+        <li><a href="#" data-i18n="footer_info_shipping">Verzending</a></li>
+        <li><a href="#" data-i18n="footer_info_returns">Retourneren</a></li>
+        <li><a href="#" data-i18n="footer_info_contact">Contact</a></li>
+        <li><a href="#" data-i18n="footer_info_faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title" data-i18n="footer_follow">Volg Ons</div>
+      <ul class="footer-links">
+        <li><a href="#" data-i18n="footer_follow_instagram">Instagram</a></li>
+        <li><a href="#" data-i18n="footer_follow_tiktok">TikTok</a></li>
+        <li><a href="#" data-i18n="footer_follow_youtube">YouTube</a></li>
+        <li><a href="#newsletter" data-i18n="footer_follow_newsletter">Newsletter</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy" data-i18n="footer_copy">© 2025 Final Whistle Clothing. Alle rechten voorbehouden.</p>
+    <div class="footer-socials">
+      <a href="#" data-i18n="social_ig">IG</a>
+      <a href="#" data-i18n="social_tt">TT</a>
+      <a href="#" data-i18n="social_yt">YT</a>
+    </div>
+  </div>
+</footer>
+
+<script src="{% static 'shop/js/site.js' %}"></script>
+</body>
+</html>

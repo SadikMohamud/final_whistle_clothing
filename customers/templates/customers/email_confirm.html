@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl" data-lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Confirmation | Final Whistle Clothing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+  <style>
+    .auth-topbar { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; }
+    .auth-shell { min-height: 100vh; display: grid; place-items: center; padding: 32px 16px; border-radius: 14px; }
+    .auth-card { width: 100%; max-width: 520px; background: var(--mid); border: 1px solid var(--border); padding: 32px; text-align: center; }
+    .auth-brand { font-family: var(--font-display); font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 20px; text-decoration: none; color: var(--white); display: inline-block; }
+    .auth-brand span { color: var(--volt); }
+    .auth-title { font-family: var(--font-display); font-size: 46px; line-height: 0.95; text-transform: uppercase; margin-bottom: 14px; }
+    .auth-sub { color: rgba(245,245,240,0.6); font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+    .auth-email { color: var(--volt); font-family: var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 26px; font-size: 13px; }
+    .auth-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary, .btn-ghost { justify-content: center; }
+    .btn-ghost { text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="auth-topbar">
+    <button type="button" id="langToggle" class="toggle-chip">NL</button>
+    <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Donker</button>
+  </div>
+
+  <section class="auth-shell">
+    <div class="auth-card fade-up visible">
+      <a href="{% url 'home' %}" class="auth-brand">Final<span>.</span>Whistle</a>
+      <h1 class="auth-title" data-i18n="auth_confirm_title">Bevestig E-mail</h1>
+      <p class="auth-sub" data-i18n="auth_confirm_sub">Je account is succesvol aangemaakt. Controleer je inbox en bevestig je e-mailadres voordat je inlogt.</p>
+      <p class="auth-email">{{ email }}</p>
+
+      <div class="auth-actions">
+        <a class="btn-primary" href="{% url 'customer_login' %}" data-i18n="auth_confirm_login_cta">Ga naar inloggen</a>
+        <a class="btn-ghost" href="{% url 'home' %}" data-i18n="auth_confirm_home_cta">Terug naar home</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="{% static 'shop/js/site.js' %}"></script>
+</body>
+</html>

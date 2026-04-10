@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl" data-lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Detail | Final Whistle Clothing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+  <style>
+    .account-topbar { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; }
+    .detail-shell { width: 100%; max-width: 860px; margin: 0 auto; padding: 84px 14px 28px; }
+    .detail-card { border: 1px solid var(--border); background: rgba(8,8,8,0.9); padding: 16px; }
+    .detail-title { font-family: var(--font-display); font-size: clamp(30px, 12vw, 44px); line-height: 0.95; text-transform: uppercase; margin-bottom: 12px; }
+    .kv { margin-bottom: 8px; color: rgba(245,245,240,0.74); font-size: 14px; }
+    .kv strong { color: var(--white); }
+    .json { margin-top: 14px; border: 1px solid var(--border); padding: 10px; background: rgba(17,17,17,0.6); color: rgba(245,245,240,0.78); font-size: 12px; white-space: pre-wrap; word-break: break-word; }
+    .actions { margin-top: 14px; display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; border: 1px solid var(--border); color: var(--white); text-decoration: none; padding: 11px 12px; font-family: var(--font-display); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
+    .btn:hover { border-color: var(--volt); color: var(--volt); }
+    @media (min-width: 700px) { .detail-shell { padding: 96px 20px 40px; } .actions { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="account-topbar">
+    <button type="button" id="langToggle" class="toggle-chip">NL</button>
+    <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Donker</button>
+  </div>
+
+  <main class="detail-shell">
+    <article class="detail-card">
+      <h1 class="detail-title">Order #{{ order.shopify_order_number }}</h1>
+      <p class="kv"><strong>Status:</strong> {{ order.status }}</p>
+      <p class="kv"><strong>Total:</strong> {{ order.currency }} {{ order.total_price }}</p>
+      <p class="kv"><strong>Items:</strong> {{ order.items_count }}</p>
+      <p class="kv"><strong>Placed:</strong> {{ order.ordered_at|date:'Y-m-d H:i' }}</p>
+      <p class="kv"><strong>Shopify ID:</strong> {{ order.shopify_order_id }}</p>
+
+      {% if order.items_data %}
+        <pre class="json">{{ order.items_data|pprint }}</pre>
+      {% endif %}
+
+      <div class="actions">
+        <a class="btn" href="{% url 'customer_orders' %}">Back to Orders</a>
+        <a class="btn" href="{% url 'customer_profile' %}">Back to Account</a>
+      </div>
+    </article>
+  </main>
+
+  <script src="{% static 'shop/js/site.js' %}"></script>
+</body>
+</html>

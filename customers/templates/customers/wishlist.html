@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl" data-lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist | Final Whistle Clothing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+  <style>
+    .account-topbar { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; }
+    .wishlist-shell { width: 100%; max-width: 920px; margin: 0 auto; padding: 84px 14px 28px; }
+    .wishlist-title { font-family: var(--font-display); font-size: clamp(30px, 13vw, 48px); line-height: 0.95; text-transform: uppercase; margin-bottom: 12px; }
+    .count { color: rgba(245,245,240,0.6); font-size: 14px; margin-bottom: 14px; }
+    .item-list { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .item { border: 1px solid var(--border); background: rgba(8,8,8,0.9); padding: 12px; }
+    .item-id { font-family: var(--font-display); letter-spacing: 0.08em; font-size: 13px; text-transform: uppercase; color: var(--white); }
+    .item-actions { margin-top: 8px; }
+    .item-actions button { border: 1px solid rgba(255,120,120,0.5); background: rgba(255,90,90,0.1); color: #f9b0b0; padding: 8px 10px; font-size: 12px; cursor: pointer; }
+    .empty { border: 1px solid var(--border); background: rgba(8,8,8,0.9); padding: 18px; color: rgba(245,245,240,0.66); }
+    @media (min-width: 760px) { .wishlist-shell { padding: 96px 20px 40px; } .item-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="account-topbar">
+    <button type="button" id="langToggle" class="toggle-chip">NL</button>
+    <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Donker</button>
+  </div>
+
+  <main class="wishlist-shell">
+    <h1 class="wishlist-title">Wishlist</h1>
+    <p class="count">Saved items: {{ items_count }}</p>
+
+    {% if items %}
+      <section class="item-list">
+        {% for item in items %}
+          <article class="item">
+            <p class="item-id">Product ID: {{ item }}</p>
+            <form class="item-actions" method="post" action="{% url 'customer_wishlist_remove' %}">
+              {% csrf_token %}
+              <input type="hidden" name="product_id" value="{{ item }}">
+              <button type="submit">Remove</button>
+            </form>
+          </article>
+        {% endfor %}
+      </section>
+    {% else %}
+      <div class="empty">Your wishlist is empty.</div>
+    {% endif %}
+  </main>
+
+  <script src="{% static 'shop/js/site.js' %}"></script>
+</body>
+</html>

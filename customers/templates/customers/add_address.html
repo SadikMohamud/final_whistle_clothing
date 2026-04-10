@@ -1,0 +1,511 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl" data-lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Address | Final Whistle Clothing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+    <style>
+        .account-topbar {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+        }
+
+        .address-shell {
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 82px 14px 28px;
+        }
+
+        .address-card {
+            border: 1px solid var(--border);
+            background: rgba(8, 8, 8, 0.9);
+            padding: 16px;
+        }
+
+        .address-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 12vw, 42px);
+            line-height: 0.95;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .messages {
+            margin-bottom: 14px;
+        }
+
+        .alert {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .alert-success {
+            background: rgba(245, 245, 240, 0.12);
+            color: var(--volt);
+        }
+
+        .alert-error {
+            background: rgba(255, 107, 107, 0.14);
+            color: #ff8b8b;
+        }
+
+        .form-section {
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-section:last-of-type {
+            border-bottom: 0;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .form-section h3 {
+            margin-bottom: 12px;
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(245, 245, 240, 0.76);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: rgba(245, 245, 240, 0.82);
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .radio-label,
+        .checkbox-label {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group select {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: rgba(17, 17, 17, 0.62);
+            color: var(--white);
+            padding: 12px;
+            font-size: 14px;
+            font-family: var(--font-body);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--volt);
+            background: rgba(17, 17, 17, 0.9);
+        }
+
+        .required {
+            color: var(--volt);
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: transform 0.2s, border-color 0.2s, background 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--volt);
+            color: var(--black);
+            border-color: var(--volt);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            background: var(--white);
+            border-color: var(--white);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--volt);
+            color: var(--volt);
+        }
+
+        @media (min-width: 560px) {
+            .address-shell {
+                padding: 90px 20px 32px;
+            }
+
+            .form-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 760px) {
+            .address-shell {
+                padding: 96px 24px 40px;
+            }
+
+            .address-card {
+                padding: 22px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <div class="account-topbar">
+        <button type="button" id="langToggle" class="toggle-chip">NL</button>
+        <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Donker</button>
+    </div>
+
+    <main class="address-shell">
+        <section class="address-card">
+            <h1 class="address-title">Add New Address</h1>
+
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form id="address-form" method="POST" class="address-form">
+                {% csrf_token %}
+
+                <div class="form-section">
+                    <h3>Address Type</h3>
+                    <div class="form-group radio-group">
+                        <label class="radio-label"><input type="radio" name="address_type" value="billing" required> Billing Address</label>
+                        <label class="radio-label"><input type="radio" name="address_type" value="shipping" required> Shipping Address</label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label"><input type="checkbox" name="is_default"> Set as default address</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Country</h3>
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <select id="country" name="country" required>
+                            <option value="">Select your country</option>
+                            <option value="US">United States</option>
+                            <option value="GB">United Kingdom</option>
+                            <option value="NL" selected>Netherlands</option>
+                            <option value="DE">Germany</option>
+                            <option value="FR">France</option>
+                            <option value="BE">Belgium</option>
+                            <option value="IT">Italy</option>
+                            <option value="ES">Spain</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Recipient</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">First Name <span class="required">*</span></label>
+                            <input type="text" id="first_name" name="first_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name <span class="required">*</span></label>
+                            <input type="text" id="last_name" name="last_name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone <span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Address</h3>
+                    <div id="dynamic-address-fields"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Address</button>
+                    <a href="{% url 'customer_addresses' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="errors">
+                        {% for error in form.non_field_errors %}
+                            <p class="error">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </form>
+        </section>
+    </main>
+
+<script>
+(function() {
+    'use strict';
+
+    // ── ADDRESS FORMATS ──
+    const addressFormats = {
+        'US': {
+            fields: [
+                { name: 'street_address', label: 'Street Address', required: true, type: 'text' },
+                { name: 'apartment_suite', label: 'Apt, Suite, etc.', required: false, type: 'text' },
+                { name: 'city', label: 'City', required: true, type: 'text' },
+                { name: 'state', label: 'State', required: true, type: 'select', options: [
+                    { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' },
+                    { value: 'AZ', label: 'Arizona' }, { value: 'AR', label: 'Arkansas' },
+                    { value: 'CA', label: 'California' }, { value: 'CO', label: 'Colorado' },
+                    { value: 'CT', label: 'Connecticut' }, { value: 'DE', label: 'Delaware' },
+                    { value: 'FL', label: 'Florida' }, { value: 'GA', label: 'Georgia' },
+                    { value: 'HI', label: 'Hawaii' }, { value: 'ID', label: 'Idaho' },
+                    { value: 'IL', label: 'Illinois' }, { value: 'IN', label: 'Indiana' },
+                    { value: 'IA', label: 'Iowa' }, { value: 'KS', label: 'Kansas' },
+                    { value: 'KY', label: 'Kentucky' }, { value: 'LA', label: 'Louisiana' },
+                    { value: 'ME', label: 'Maine' }, { value: 'MD', label: 'Maryland' },
+                    { value: 'MA', label: 'Massachusetts' }, { value: 'MI', label: 'Michigan' },
+                    { value: 'MN', label: 'Minnesota' }, { value: 'MS', label: 'Mississippi' },
+                    { value: 'MO', label: 'Missouri' }, { value: 'MT', label: 'Montana' },
+                    { value: 'NE', label: 'Nebraska' }, { value: 'NV', label: 'Nevada' },
+                    { value: 'NH', label: 'New Hampshire' }, { value: 'NJ', label: 'New Jersey' },
+                    { value: 'NM', label: 'New Mexico' }, { value: 'NY', label: 'New York' },
+                    { value: 'NC', label: 'North Carolina' }, { value: 'ND', label: 'North Dakota' },
+                    { value: 'OH', label: 'Ohio' }, { value: 'OK', label: 'Oklahoma' },
+                    { value: 'OR', label: 'Oregon' }, { value: 'PA', label: 'Pennsylvania' },
+                    { value: 'RI', label: 'Rhode Island' }, { value: 'SC', label: 'South Carolina' },
+                    { value: 'SD', label: 'South Dakota' }, { value: 'TN', label: 'Tennessee' },
+                    { value: 'TX', label: 'Texas' }, { value: 'UT', label: 'Utah' },
+                    { value: 'VT', label: 'Vermont' }, { value: 'VA', label: 'Virginia' },
+                    { value: 'WA', label: 'Washington' }, { value: 'WV', label: 'West Virginia' },
+                    { value: 'WI', label: 'Wisconsin' }, { value: 'WY', label: 'Wyoming' }
+                ] },
+                { name: 'postal_code', label: 'ZIP Code', required: true, type: 'text' }
+            ]
+        },
+        'GB': {
+            fields: [
+                { name: 'street_address', label: 'Street Address', required: true, type: 'text' },
+                { name: 'apartment_suite', label: 'Flat/Building', required: false, type: 'text' },
+                { name: 'city', label: 'City/Town', required: true, type: 'text' },
+                { name: 'postal_code', label: 'Postcode', required: true, type: 'text' }
+            ]
+        },
+        'NL': {
+            fields: [
+                { name: 'street_address', label: 'Straatnaam', required: true, type: 'text' },
+                { name: 'apartment_suite', label: 'Huisnummer/Toevoeging', required: false, type: 'text' },
+                { name: 'postal_code', label: 'Postcode', required: true, type: 'text', placeholder: '1234 AB' },
+                { name: 'city', label: 'Stad', required: true, type: 'text' }
+            ]
+        },
+        'DE': {
+            fields: [
+                { name: 'street_address', label: 'Straße', required: true, type: 'text' },
+                { name: 'apartment_suite', label: 'Hausnummer/Zusatz', required: false, type: 'text' },
+                { name: 'postal_code', label: 'Postleitzahl', required: true, type: 'text' },
+                { name: 'city', label: 'Stadt', required: true, type: 'text' }
+            ]
+        },
+        'FR': {
+            fields: [
+                { name: 'street_address', label: 'Adresse', required: true, type: 'text' },
+                { name: 'apartment_suite', label: 'Appartement/Bâtiment', required: false, type: 'text' },
+                { name: 'postal_code', label: 'Code Postal', required: true, type: 'text' },
+                { name: 'city', label: 'Ville', required: true, type: 'text' }
+            ]
+        },
+        'BE': {
+            fields: [
+                { name: 'street_address', label: 'Rue/Straße', required: true, type: 'text' },
+                { name: 'apartment_suite', label: 'Numéro/Nummer', required: false, type: 'text' },
+                { name: 'postal_code', label: 'Code Postal', required: true, type: 'text' },
+                { name: 'city', label: 'Ville/Stad', required: true, type: 'text' }
+            ]
+        },
+        'IT': {
+            fields: [
+                { name: 'street_address', label: 'Via/Strada', required: true, type: 'text' },
+                { name: 'apartment_suite', label: 'Numero/Civico', required: false, type: 'text' },
+                { name: 'postal_code', label: 'CAP', required: true, type: 'text' },
+                { name: 'city', label: 'Città', required: true, type: 'text' }
+            ]
+        },
+        'ES': {
+            fields: [
+                { name: 'street_address', label: 'Calle', required: true, type: 'text' },
+                { name: 'apartment_suite', label: 'Número/Piso', required: false, type: 'text' },
+                { name: 'postal_code', label: 'Código Postal', required: true, type: 'text' },
+                { name: 'city', label: 'Ciudad', required: true, type: 'text' }
+            ]
+        }
+    };
+
+    // ── DOM ELEMENTS ──
+    const countrySelect = document.getElementById('country');
+    const dynamicFields = document.getElementById('dynamic-address-fields');
+
+    // ── LANGUAGE TO COUNTRY MAPPING ──
+    const languageMap = {
+        'en-US': 'US', 'en-GB': 'GB', 'en-CA': 'US',
+        'nl': 'NL', 'nl-NL': 'NL', 'nl-BE': 'BE',
+        'de': 'DE', 'de-DE': 'DE', 'de-AT': 'DE',
+        'fr': 'FR', 'fr-FR': 'FR', 'fr-BE': 'BE',
+        'be': 'BE', 'it': 'IT', 'it-IT': 'IT',
+        'es': 'ES', 'es-ES': 'ES'
+    };
+
+    /**
+     * Render address fields based on selected country format
+     * @param {string} countryCode - ISO country code
+     */
+    function renderAddressFields(countryCode) {
+        const format = addressFormats[countryCode] || addressFormats['NL'];
+        dynamicFields.innerHTML = '';
+
+        format.fields.forEach((field) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'form-group';
+
+            if (field.type === 'select') {
+                wrapper.innerHTML = `
+                    <label for="${field.name}">${field.label} ${field.required ? '<span class="required">*</span>' : ''}</label>
+                    <select id="${field.name}" name="${field.name}" ${field.required ? 'required' : ''}>
+                        <option value="">Select ${field.label.toLowerCase()}</option>
+                        ${field.options.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('')}
+                    </select>
+                `;
+            } else {
+                wrapper.innerHTML = `
+                    <label for="${field.name}">${field.label} ${field.required ? '<span class="required">*</span>' : ''}</label>
+                    <input type="${field.type}" id="${field.name}" name="${field.name}" 
+                        ${field.required ? 'required' : ''} 
+                        ${field.placeholder ? `placeholder="${field.placeholder}"` : ''}>
+                `;
+            }
+
+            dynamicFields.appendChild(wrapper);
+        });
+    }
+
+    /**
+     * Detect user's country from browser language or geolocation
+     */
+    function initializeAddressForm() {
+        const browserLanguage = navigator.language || navigator.userLanguage;
+
+        // Map language to country code
+        let detectedCountry = languageMap[browserLanguage];
+
+        if (!detectedCountry) {
+            const baseLang = browserLanguage.split('-')[0].toLowerCase();
+            for (const [langCode, country] of Object.entries(languageMap)) {
+                if (langCode.startsWith(baseLang)) {
+                    detectedCountry = country;
+                    break;
+                }
+            }
+        }
+
+        detectedCountry = detectedCountry || 'NL';
+
+        // Try geolocation if available
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                () => {
+                    // Geolocation successful, use detected country
+                    countrySelect.value = detectedCountry;
+                    renderAddressFields(detectedCountry);
+                },
+                () => {
+                    // Geolocation denied/error, fallback to language
+                    countrySelect.value = detectedCountry;
+                    renderAddressFields(detectedCountry);
+                },
+                { timeout: 5000 }
+            );
+        } else {
+            // No geolocation support, use browser language
+            countrySelect.value = detectedCountry;
+            renderAddressFields(detectedCountry);
+        }
+    }
+
+    // ── EVENT LISTENERS ──
+    countrySelect.addEventListener('change', (e) => {
+        renderAddressFields(e.target.value);
+    });
+
+    // ── INITIALIZATION ──
+    document.addEventListener('DOMContentLoaded', initializeAddressForm);
+})();
+</script>
+    <script src="{% static 'shop/js/site.js' %}"></script>
+    </body>
+    </html>

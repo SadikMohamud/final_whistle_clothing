@@ -1,0 +1,222 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Our Story | Final Whistle Clothing{% endblock %}
+
+{% block content %}
+<main class="story-page">
+  <section class="story-hero" data-parallax-root>
+    <div class="story-hero-bg parallax-layer" data-parallax-speed="-0.06"></div>
+    <div class="story-hero-grid">
+      <div class="story-hero-copy parallax-layer" data-parallax-speed="0.12" data-parallax-pointer="0.45">
+        <p class="story-kicker">Brand inception</p>
+        <h1>From a sketchbook to a streetwear label</h1>
+        <p class="story-intro">{{ story_intro }}</p>
+      </div>
+
+      <div class="story-hero-image-wrap parallax-layer" data-parallax-speed="0.22" data-parallax-pointer="0.85">
+        <img class="story-hero-image" src="https://placehold.co/1200x1500/111111/F5F5F0?text=FWC+Studio+01" alt="Studio moodboard for Final Whistle Clothing">
+      </div>
+    </div>
+  </section>
+
+  <section class="story-section story-offset" data-parallax-root>
+    <div class="story-panel parallax-layer" data-parallax-speed="0.08" data-parallax-pointer="0.2">
+      <p class="story-section-label">The beginning</p>
+      <p class="story-section-text">The brand began with a simple problem: most options felt either too generic or too loud. Final Whistle Clothing was built to sit in the middle, with sharper cuts, cleaner branding, and a more deliberate everyday attitude.</p>
+    </div>
+    <div class="story-image-stack">
+      <img class="story-image story-image-large parallax-layer" data-parallax-speed="0.18" data-parallax-pointer="0.6" src="https://placehold.co/900x1100/0E0E0E/C8F400?text=FWC+01" alt="First Final Whistle Clothing concept image">
+      <img class="story-image story-image-small parallax-layer" data-parallax-speed="0.28" data-parallax-pointer="1.0" src="https://placehold.co/720x900/151515/F5F5F0?text=FWC+02" alt="Second Final Whistle Clothing concept image">
+    </div>
+  </section>
+
+  <section class="story-section story-reverse" data-parallax-root>
+    <div class="story-image-stack story-image-stack-reverse">
+      <img class="story-image story-image-large parallax-layer" data-parallax-speed="0.2" data-parallax-pointer="0.45" src="https://placehold.co/960x1200/131313/F5F5F0?text=FWC+03" alt="Streetwear collection styling inspiration">
+      <img class="story-image story-image-small parallax-layer" data-parallax-speed="0.32" data-parallax-pointer="0.88" src="https://placehold.co/760x860/101010/C8F400?text=FWC+04" alt="Detail shot of Final Whistle Clothing design process">
+    </div>
+    <div class="story-panel parallax-layer" data-parallax-speed="0.1" data-parallax-pointer="0.25">
+      <p class="story-section-label">What it became</p>
+      <p class="story-section-text">The label grew into a streetwear system built around movement, texture, and repetition. Each piece is meant to feel considered without feeling precious. That is the point: clothing that looks intentional in a room and effortless on the street.</p>
+    </div>
+  </section>
+
+  <section class="story-section story-closing" data-parallax-root>
+    <div class="story-close-card parallax-layer" data-parallax-speed="0.12" data-parallax-pointer="0.35">
+      <p class="story-section-label">Today</p>
+      <h2>A modern streetwear brand with a clear point of view</h2>
+      <p class="story-section-text">The inception of Final Whistle Clothing was not about chasing a trend. It was about building a brand with a consistent visual language, strong silhouettes, and a mood that feels grounded in the street from day one.</p>
+      <a class="btn-primary" href="{% url 'collection_view' 'all' %}">Shop the collection</a>
+    </div>
+  </section>
+</main>
+
+<style>
+  .story-page {
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top left, rgba(200, 245, 0, 0.08), transparent 28%),
+      radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.06), transparent 34%),
+      linear-gradient(180deg, #080808 0%, #0c0c0c 100%);
+  }
+
+  .story-hero,
+  .story-section {
+    position: relative;
+    width: min(1180px, calc(100vw - 32px));
+    margin: 0 auto;
+  }
+
+  .story-hero {
+    min-height: 100vh;
+    display: grid;
+    align-items: center;
+    padding: 96px 0 56px;
+  }
+
+  .story-hero-bg {
+    position: absolute;
+    inset: -10% -20% 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(200, 245, 0, 0.12), transparent 22%),
+      radial-gradient(circle at 78% 40%, rgba(245, 245, 240, 0.08), transparent 18%),
+      linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+    border: 1px solid rgba(255,255,255,0.03);
+    border-radius: 36px;
+    z-index: 0;
+  }
+
+  .story-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+
+  .story-hero-copy {
+    max-width: 620px;
+    padding: 10px 0;
+  }
+
+  .story-kicker,
+  .story-section-label {
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(245, 245, 240, 0.6);
+    margin-bottom: 10px;
+  }
+
+  .story-hero h1,
+  .story-close-card h2 {
+    font-family: var(--font-display);
+    font-size: clamp(52px, 10vw, 108px);
+    line-height: 0.9;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    max-width: 10ch;
+  }
+
+  .story-intro,
+  .story-section-text {
+    font-size: clamp(16px, 1.8vw, 20px);
+    line-height: 1.7;
+    color: rgba(245, 245, 240, 0.82);
+    max-width: 60ch;
+  }
+
+  .story-hero-image-wrap {
+    justify-self: center;
+    width: min(100%, 520px);
+    transform: translate3d(0,0,0);
+  }
+
+  .story-hero-image,
+  .story-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.34);
+  }
+
+  .story-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 26px;
+    align-items: center;
+    padding: 32px 0 96px;
+  }
+
+  .story-panel,
+  .story-close-card {
+    background: rgba(10, 10, 10, 0.58);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .story-image-stack {
+    position: relative;
+    min-height: 540px;
+  }
+
+  .story-image-large {
+    width: min(100%, 72vw);
+    max-width: 620px;
+    border-radius: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-image-small {
+    width: min(44vw, 360px);
+    border-radius: 24px;
+    position: absolute;
+    right: 0;
+    bottom: -16px;
+    z-index: 2;
+  }
+
+  .story-reverse .story-image-stack-reverse .story-image-small {
+    left: 0;
+    right: auto;
+  }
+
+  .story-reverse .story-image-stack-reverse .story-image-large {
+    margin-left: auto;
+  }
+
+  .story-close-card {
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .story-close-card .btn-primary {
+    display: inline-flex;
+    margin-top: 18px;
+  }
+
+  @media (min-width: 980px) {
+    .story-hero-grid,
+    .story-section {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 48px;
+    }
+
+    .story-section.story-reverse {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .story-closing {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}

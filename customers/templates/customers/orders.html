@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl" data-lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders | Final Whistle Clothing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+  <style>
+    .account-topbar { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; }
+    .orders-shell { width: 100%; max-width: 1040px; margin: 0 auto; padding: 84px 14px 28px; }
+    .orders-title { font-family: var(--font-display); font-size: clamp(30px, 13vw, 48px); text-transform: uppercase; line-height: 0.95; margin-bottom: 14px; }
+    .orders-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .order-card { border: 1px solid var(--border); background: rgba(8,8,8,0.9); padding: 14px; }
+    .order-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .order-id { font-family: var(--font-display); font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .order-status { font-size: 11px; color: var(--volt); text-transform: uppercase; letter-spacing: 0.1em; }
+    .order-meta { color: rgba(245,245,240,0.62); font-size: 13px; line-height: 1.5; }
+    .order-link { margin-top: 10px; display: inline-flex; text-decoration: none; color: var(--white); border: 1px solid var(--border); padding: 9px 12px; font-family: var(--font-display); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
+    .order-link:hover { color: var(--volt); border-color: var(--volt); }
+    .empty { border: 1px solid var(--border); background: rgba(8,8,8,0.9); padding: 18px; color: rgba(245,245,240,0.66); }
+    @media (min-width: 860px) {
+      .orders-shell { padding: 96px 30px 40px; }
+      .orders-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="account-topbar">
+    <button type="button" id="langToggle" class="toggle-chip">NL</button>
+    <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Donker</button>
+  </div>
+
+  <main class="orders-shell">
+    <h1 class="orders-title">My Orders</h1>
+
+    {% if orders %}
+      <section class="orders-grid">
+        {% for order in orders %}
+          <article class="order-card">
+            <div class="order-head">
+              <h2 class="order-id">#{{ order.shopify_order_number }}</h2>
+              <span class="order-status">{{ order.status }}</span>
+            </div>
+            <p class="order-meta">Total: {{ order.currency }} {{ order.total_price }}</p>
+            <p class="order-meta">Items: {{ order.items_count }}</p>
+            <p class="order-meta">Placed: {{ order.ordered_at|date:'Y-m-d H:i' }}</p>
+            <a class="order-link" href="{% url 'customer_order_detail' order.id %}">View Details</a>
+          </article>
+        {% endfor %}
+      </section>
+    {% else %}
+      <div class="empty">No orders yet. Place your first order from the shop.</div>
+    {% endif %}
+  </main>
+
+  <script src="{% static 'shop/js/site.js' %}"></script>
+</body>
+</html>

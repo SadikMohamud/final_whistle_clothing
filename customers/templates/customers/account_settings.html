@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl" data-lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Settings | Final Whistle Clothing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+  <style>
+    .account-topbar { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; }
+    .settings-shell { width: 100%; max-width: 900px; margin: 0 auto; padding: 84px 14px 28px; }
+    .settings-title { font-family: var(--font-display); font-size: clamp(30px, 13vw, 48px); line-height: 0.95; text-transform: uppercase; margin-bottom: 14px; }
+    .settings-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .panel { border: 1px solid var(--border); background: rgba(8,8,8,0.9); padding: 14px; }
+    .panel h2 { font-family: var(--font-display); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+    .meta { color: rgba(245,245,240,0.66); font-size: 13px; line-height: 1.6; }
+    .btn { margin-top: 10px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border); padding: 10px 12px; color: var(--white); text-decoration: none; font-family: var(--font-display); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
+    .btn:hover { border-color: var(--volt); color: var(--volt); }
+    @media (min-width: 820px) { .settings-shell { padding: 96px 24px 40px; } .settings-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="account-topbar">
+    <button type="button" id="langToggle" class="toggle-chip">NL</button>
+    <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Donker</button>
+  </div>
+
+  <main class="settings-shell">
+    <h1 class="settings-title">Account Settings</h1>
+
+    <section class="settings-grid">
+      <article class="panel">
+        <h2>Authentication</h2>
+        <p class="meta">Primary login: {{ profile.oauth_provider|default:'email' }}</p>
+        {% if social_account %}
+          <p class="meta">Social provider: {{ social_account.provider }}</p>
+          <p class="meta">Connected account: {{ social_account.uid }}</p>
+        {% else %}
+          <p class="meta">No social account connected.</p>
+        {% endif %}
+      </article>
+
+      <article class="panel">
+        <h2>Privacy</h2>
+        <p class="meta">Manage notification and marketing preferences in your notifications page.</p>
+        <a class="btn" href="{% url 'customer_notifications' %}">Notification Settings</a>
+      </article>
+    </section>
+  </main>
+
+  <script src="{% static 'shop/js/site.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Collection {{ collection_slug|title }} | Final Whistle Clothing{% endblock %}
+
+{% block content %}
+<main style="max-width:1120px;margin:0 auto;padding:32px 16px 56px;">
+  <p><a href="{% url 'home' %}" style="color:var(--volt);">&larr; Back to home</a></p>
+  <h1 style="font-family:var(--font-display);font-size:clamp(30px,6vw,54px);line-height:.95;text-transform:uppercase;">{{ collection_slug|title }} Collection</h1>
+  <p style="color:rgba(245,245,240,.75);margin-bottom:16px;">{{ products|length }} products</p>
+
+  <section style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+    {% for product in products %}
+      <article style="border:1px solid var(--border);background:rgba(8,8,8,.9);">
+        <a href="{% url 'product_detail' product.handle %}" style="text-decoration:none;color:inherit;display:block;">
+          {% if product.image_url %}
+            <img src="{{ product.image_url }}" alt="{{ product.image_alt }}" style="width:100%;height:300px;object-fit:cover;">
+          {% endif %}
+          <div style="padding:10px;">
+            <h2 style="font-size:18px;line-height:1.2;">{{ product.title }}</h2>
+            <p><strong>{{ product.currency }} {{ product.price }}</strong></p>
+          </div>
+        </a>
+      </article>
+    {% empty %}
+      <p>No products found for this collection.</p>
+    {% endfor %}
+  </section>
+</main>
+{% endblock %}

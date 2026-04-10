@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*?
+Disallow: /checkout/
+Disallow: /cart/
+
+# Specific crawl-delay for bots
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://finalwhistleclothing.com/sitemap.xml
+Sitemap: https://finalwhistleclothing.com/sitemap-nl.xml

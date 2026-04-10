@@ -1,0 +1,173 @@
+{% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="nl" data-lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="auth_signup_page_title">Aanmelden | Final Whistle Clothing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+  <style>
+    .auth-topbar { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; }
+    .auth-shell { min-height: 100vh; display: grid; place-items: center; padding: 32px 16px; border-radius: 14px; }
+    .auth-card { width: 100%; max-width: 520px; background: var(--mid); border: 1px solid var(--border); padding: 32px; box-shadow: 0 14px 34px rgba(0,0,0,0.24); }
+    .auth-brand { font-family: var(--font-display); font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 24px; text-decoration: none; color: var(--white); display: inline-block; }
+    .auth-brand span { color: var(--volt); }
+    .auth-title { font-family: var(--font-display); font-size: 48px; line-height: 0.95; text-transform: uppercase; margin-bottom: 18px; }
+    .auth-sub { color: rgba(245,245,240,0.55); font-size: 14px; margin-bottom: 28px; }
+    .auth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .auth-label { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(245,245,240,0.7); display: block; margin-bottom: 8px; }
+    .auth-input { width: 100%; border: 1px solid var(--border); background: rgba(12,12,12,0.9); color: var(--white); padding: 14px 14px; font-size: 14px; margin-bottom: 16px; }
+    .auth-input:focus { outline: none; border-color: var(--volt); }
+    .auth-help { color: rgba(245,245,240,0.45); font-size: 12px; margin-top: -4px; margin-bottom: 12px; }
+    .auth-submit { width: 100%; margin-top: 6px; }
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 8px;
+    }
+    .auth-divider hr {
+      flex: 1;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+    .auth-divider span {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(245,245,240,0.55);
+    }
+    .auth-google {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid var(--volt);
+      color: var(--volt);
+      text-decoration: none;
+      padding: 12px 14px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .auth-google:hover {
+      border-color: var(--volt);
+      color: var(--black);
+      background: var(--volt);
+    }
+    .auth-errors { border: 1px solid rgba(255,90,90,0.5); background: rgba(255,90,90,0.12); color: #ff9d9d; padding: 10px 12px; margin-bottom: 14px; font-size: 13px; }
+    .auth-errors ul { margin: 0; padding-left: 16px; }
+    .auth-switch { margin-top: 18px; text-align: center; }
+    .auth-switch a { color: var(--volt); text-decoration: none; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 12px; }
+    .auth-switch a:hover { text-decoration: underline; }
+    @media (max-width: 640px) { .auth-grid { grid-template-columns: 1fr; } }
+    body[data-theme='light'] .auth-card {
+      background: rgba(255,255,255,0.82);
+      border-color: rgba(0,0,0,0.14);
+      box-shadow: 0 14px 32px rgba(14, 22, 6, 0.12);
+    }
+    body[data-theme='light'] .auth-brand,
+    body[data-theme='light'] .auth-title {
+      color: #101010;
+    }
+    body[data-theme='light'] .auth-sub,
+    body[data-theme='light'] .auth-label,
+    body[data-theme='light'] .auth-help {
+      color: rgba(16,16,16,0.72);
+    }
+    body[data-theme='light'] .auth-divider span {
+      color: rgba(16,16,16,0.56);
+    }
+    body[data-theme='light'] .auth-input {
+      background: #f8f8f3;
+      color: #101010;
+      border-color: rgba(0,0,0,0.18);
+    }
+    body[data-theme='light'] .auth-google {
+      color: var(--volt);
+      border-color: var(--volt);
+      background: #f8f8f3;
+    }
+    body[data-theme='light'] .auth-errors {
+      border-color: rgba(202, 42, 42, 0.32);
+      background: rgba(202, 42, 42, 0.1);
+      color: #7b1e1e;
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="auth-topbar">
+    <button type="button" id="langToggle" class="toggle-chip">NL</button>
+    <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Donker</button>
+  </div>
+
+  <section class="auth-shell">
+    <div class="auth-card fade-up visible">
+      <a href="{% url 'home' %}" class="auth-brand">Final<span>.</span>Whistle</a>
+      <h1 class="auth-title" data-i18n="auth_signup_title">Aanmelden</h1>
+      <p class="auth-sub" data-i18n="auth_signup_sub">Maak je account aan om te browsen en te bestellen met Shopify checkout.</p>
+
+      {% if errors %}
+      <div class="auth-errors">
+        <ul>
+          {% for err in errors %}
+          <li>{{ err }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <form method="post" action="{% url 'customer_register' %}">
+        {% csrf_token %}
+
+        <div class="auth-grid">
+          <div>
+            <label class="auth-label" for="first_name" data-i18n="auth_first_name_label">Voornaam</label>
+            <input class="auth-input" id="first_name" name="first_name" type="text" value="{{ first_name|default:'' }}" required>
+          </div>
+          <div>
+            <label class="auth-label" for="last_name" data-i18n="auth_last_name_label">Achternaam</label>
+            <input class="auth-input" id="last_name" name="last_name" type="text" value="{{ last_name|default:'' }}" required>
+          </div>
+        </div>
+
+        <label class="auth-label" for="email" data-i18n="auth_email_label">E-mail</label>
+        <input class="auth-input" id="email" name="email" type="email" value="{{ email|default:'' }}" required>
+
+        <label class="auth-label" for="password" data-i18n="auth_password_label">Wachtwoord</label>
+        <input class="auth-input" id="password" name="password" type="password" required>
+        <p class="auth-help" data-i18n="auth_password_help">Moet minimaal 8 tekens hebben, 1 speciaal teken en 3 cijfers.</p>
+
+        <label class="auth-label" for="password_confirm" data-i18n="auth_confirm_password_label">Bevestig wachtwoord</label>
+        <input class="auth-input" id="password_confirm" name="password_confirm" type="password" required>
+
+        <button class="btn-primary auth-submit" type="submit" data-i18n="auth_signup_button">Account aanmaken</button>
+
+        <div class="auth-divider">
+          <hr>
+          <span data-i18n="auth_or_continue">of</span>
+          <hr>
+        </div>
+
+        <a class="auth-google" href="{% provider_login_url 'google' process='login' %}" data-i18n="auth_google_button">Doorgaan met Google</a>
+      </form>
+
+      <div class="auth-switch">
+        <a href="{% url 'customer_login' %}" data-i18n="auth_back_login">Terug naar inloggen</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="{% static 'shop/js/site.js' %}"></script>
+</body>
+</html>

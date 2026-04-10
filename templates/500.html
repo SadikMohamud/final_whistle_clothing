@@ -1,0 +1,11 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Server Error | Final Whistle Clothing{% endblock %}
+
+{% block content %}
+<main style="max-width:900px;margin:0 auto;padding:56px 16px;text-align:center;">
+  <h1 style="font-family:var(--font-display);font-size:clamp(38px,8vw,82px);line-height:.9;text-transform:uppercase;">500</h1>
+  <p>Something went wrong on our side. Please try again shortly.</p>
+  <p><a href="{% url 'home' %}" style="color:var(--volt);">Return to homepage</a></p>
+</main>
+{% endblock %}
