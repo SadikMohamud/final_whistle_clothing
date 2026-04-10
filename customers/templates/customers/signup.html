@@ -153,6 +153,7 @@
 
         <button class="btn-primary auth-submit" type="submit" data-i18n="auth_signup_button">Account aanmaken</button>
 
+        {% if google_social_app %}
         <div class="auth-divider">
           <hr>
           <span data-i18n="auth_or_continue">of</span>
@@ -160,6 +161,7 @@
         </div>
 
         <a class="auth-google" href="{% provider_login_url 'google' process='login' %}" data-i18n="auth_google_button">Doorgaan met Google</a>
+        {% endif %}
       </form>
 
       <div class="auth-switch">

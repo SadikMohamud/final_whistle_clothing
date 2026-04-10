@@ -12,7 +12,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
-from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.models import SocialAccount, SocialApp
 
 from .models import (
     CustomerProfile,
@@ -26,6 +26,8 @@ from .address_formats import get_address_format, get_browser_language_to_country
 
 def register_view(request):
     """User registration with email"""
+    google_social_app = SocialApp.objects.filter(provider='google').exists()
+
     if request.user.is_authenticated:
         return redirect('customer_profile')
     
@@ -62,6 +64,7 @@ def register_view(request):
                 'email': email,
                 'first_name': first_name,
                 'last_name': last_name,
+                'google_social_app': google_social_app,
             })
         
         # Create user
@@ -90,12 +93,16 @@ def register_view(request):
         except Exception as e:
             errors.append(f'Registration failed: {str(e)}')
             return render(request, 'customers/signup.html', {'errors': errors})
-    
-    return render(request, 'customers/signup.html')
+
+    return render(request, 'customers/signup.html', {
+        'google_social_app': google_social_app,
+    })
 
 
 def login_view(request):
     """User login with email/password"""
+    google_social_app = SocialApp.objects.filter(provider='google').exists()
+
     # Allow forcing the login screen from navbar/account links.
     force_login = request.GET.get('force') == '1'
 
@@ -116,9 +123,12 @@ def login_view(request):
             return render(request, 'customers/login.html', {
                 'error': 'Invalid email or password',
                 'email': email,
+                'google_social_app': google_social_app,
             })
-    
-    return render(request, 'customers/login.html')
+
+    return render(request, 'customers/login.html', {
+        'google_social_app': google_social_app,
+    })
 
 
 @login_required(login_url='customer_login')
