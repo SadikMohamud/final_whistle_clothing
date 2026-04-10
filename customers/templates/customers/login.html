@@ -127,7 +127,7 @@
         <label class="auth-label" for="password" data-i18n="auth_password_label">Wachtwoord</label>
         <input class="auth-input" id="password" name="password" type="password" required>
         <div class="auth-forgot">
-          <a href="{% url 'customer_password_reset' %}">Wachtwoord vergeten?</a>
+          <a href="{% url 'customer_password_reset' %}" data-i18n="auth_forgot_password">Wachtwoord vergeten?</a>
         </div>
 
         <button class="btn-primary auth-submit" type="submit" data-i18n="auth_login_button">Inloggen</button>
