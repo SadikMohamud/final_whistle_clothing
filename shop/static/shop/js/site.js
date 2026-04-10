@@ -2,6 +2,7 @@ const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
 const langToggle = document.getElementById('langToggle');
 const themeToggle = document.getElementById('themeToggle');
+let themeSwitchInput = null;
 const root = document.documentElement;
 const body = document.body;
 
@@ -266,25 +267,67 @@ function applyLanguage(lang) {
   }
 
   localStorage.setItem('fwcLang', safeLang);
-  updateThemeLabel();
+  syncThemeToggleState();
 }
 
 function applyTheme(theme) {
   const safeTheme = theme === 'light' ? 'light' : 'dark';
   body.setAttribute('data-theme', safeTheme);
   localStorage.setItem('fwcTheme', safeTheme);
-  updateThemeLabel();
+  syncThemeToggleState();
 }
 
-function updateThemeLabel() {
-  if (!themeToggle) {
+function syncThemeToggleState() {
+  if (!themeSwitchInput) {
     return;
   }
 
-  const lang = root.getAttribute('data-lang') || 'nl';
   const theme = body.getAttribute('data-theme') || 'dark';
-  const key = theme === 'light' ? 'theme_light' : 'theme_dark';
-  themeToggle.textContent = translations[lang][key];
+  themeSwitchInput.checked = theme !== 'light';
+}
+
+function renderThemeToggleSwitch() {
+  if (!themeToggle || themeToggle.classList.contains('switch')) {
+    return;
+  }
+
+  const currentTheme = localStorage.getItem('fwcTheme') || 'dark';
+  const switchLabel = document.createElement('label');
+  switchLabel.className = 'switch';
+  switchLabel.setAttribute('aria-label', 'Toggle theme');
+  switchLabel.innerHTML = `
+    <input id="themeSwitch" type="checkbox" ${currentTheme === 'dark' ? 'checked' : ''} aria-label="Toggle theme">
+    <div class="slider round">
+      <div class="sun-moon">
+        <svg id="moon-dot-1" class="moon-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="moon-dot-2" class="moon-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="moon-dot-3" class="moon-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="light-ray-1" class="light-ray" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="light-ray-2" class="light-ray" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="light-ray-3" class="light-ray" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="cloud-1" class="cloud-dark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="cloud-2" class="cloud-dark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="cloud-3" class="cloud-dark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="cloud-4" class="cloud-light" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="cloud-5" class="cloud-light" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+        <svg id="cloud-6" class="cloud-light" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+      </div>
+      <div class="stars">
+        <svg id="star-1" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path></svg>
+        <svg id="star-2" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path></svg>
+        <svg id="star-3" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path></svg>
+        <svg id="star-4" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path></svg>
+      </div>
+    </div>`;
+
+  themeToggle.replaceWith(switchLabel);
+  themeSwitchInput = switchLabel.querySelector('#themeSwitch');
+
+  themeSwitchInput.addEventListener('change', () => {
+    applyTheme(themeSwitchInput.checked ? 'dark' : 'light');
+  });
+
+  syncThemeToggleState();
 }
 
 if (langToggle) {
@@ -295,10 +338,7 @@ if (langToggle) {
 }
 
 if (themeToggle) {
-  themeToggle.addEventListener('click', () => {
-    const current = body.getAttribute('data-theme') || 'dark';
-    applyTheme(current === 'dark' ? 'light' : 'dark');
-  });
+  renderThemeToggleSwitch();
 }
 
 const initialTheme = localStorage.getItem('fwcTheme') || 'dark';
