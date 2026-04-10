@@ -246,7 +246,11 @@
   <a href="{% url 'home' %}" class="nav-logo" data-i18n="brand_logo">Final<span>.</span>Whistle</a>
   <div class="nav-right">
     <a href="{% url 'search' %}" data-i18n="nav_search">Zoeken</a>
-    <a href="{% url 'customer_login' %}?force=1&next={% url 'home' %}#shop" data-i18n="nav_account">Account</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'customer_logout' %}" data-i18n="nav_logout">Logout</a>
+    {% else %}
+    <a href="{% url 'customer_login' %}?force=1&next={% url 'customer_profile' %}" data-i18n="nav_login">Log in</a>
+    {% endif %}
     <button type="button" id="langToggle" class="toggle-chip">NL</button>
     <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Dark</button>
   </div>
