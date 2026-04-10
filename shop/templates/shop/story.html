@@ -1,4 +1,5 @@
 {% extends "shop/base.html" %}
+{% load static %}
 
 {% block title %}Our Story | Final Whistle Clothing{% endblock %}
 
@@ -14,7 +15,7 @@
       </div>
 
       <div class="story-hero-image-wrap parallax-layer" data-parallax-speed="0.22" data-parallax-pointer="0.85">
-        <img class="story-hero-image" src="/media/story/fwc-studio-01.png" alt="Design sketchbook showing Final Whistle Clothing studio process">
+        <img class="story-hero-image" src="{% static 'shop/images/story/fwc-studio-01.png' %}" alt="Design sketchbook showing Final Whistle Clothing studio process">
       </div>
     </div>
   </section>
@@ -25,15 +26,15 @@
       <p class="story-section-text">The brand began with a simple problem: most options felt either too generic or too loud. Final Whistle Clothing was built to sit in the middle, with sharper cuts, cleaner branding, and a more deliberate everyday attitude.</p>
     </div>
     <div class="story-image-stack">
-      <img class="story-image story-image-large parallax-layer" data-parallax-speed="0.18" data-parallax-pointer="0.6" src="/media/story/fwc-studio-02.png" alt="Final Whistle Clothing product lineup and design specifications">
-      <img class="story-image story-image-small parallax-layer" data-parallax-speed="0.28" data-parallax-pointer="1.0" src="/media/story/fwc-detail-main.png" alt="Model in Final Whistle hoodie styled in a city alley">
+      <img class="story-image story-image-large parallax-layer" data-parallax-speed="0.18" data-parallax-pointer="0.6" src="{% static 'shop/images/story/fwc-studio-02.png' %}" alt="Final Whistle Clothing product lineup and design specifications">
+      <img class="story-image story-image-small parallax-layer" data-parallax-speed="0.28" data-parallax-pointer="1.0" src="{% static 'shop/images/story/fwc-detail-main.png' %}" alt="Model in Final Whistle hoodie styled in a city alley">
     </div>
   </section>
 
   <section class="story-section story-reverse" data-parallax-root>
     <div class="story-image-stack story-image-stack-reverse">
-      <img class="story-image story-image-large parallax-layer" data-parallax-speed="0.2" data-parallax-pointer="0.45" src="https://placehold.co/960x1200/131313/F5F5F0?text=FWC+03" alt="Streetwear collection styling inspiration">
-      <img class="story-image story-image-small parallax-layer" data-parallax-speed="0.32" data-parallax-pointer="0.88" src="https://placehold.co/760x860/101010/C8F400?text=FWC+04" alt="Detail shot of Final Whistle Clothing design process">
+      <img class="story-image story-image-large parallax-layer" data-parallax-speed="0.2" data-parallax-pointer="0.45" src="{% static 'shop/images/story/fwc-03.png' %}" alt="Streetwear model standing on rooftop with skyline">
+      <img class="story-image story-image-small parallax-layer" data-parallax-speed="0.32" data-parallax-pointer="0.88" src="{% static 'shop/images/story/fwc-04.png' %}" alt="Streetwear model in black hoodie styled in cinematic city scene">
     </div>
     <div class="story-panel parallax-layer" data-parallax-speed="0.1" data-parallax-pointer="0.25">
       <p class="story-section-label">What it became</p>
