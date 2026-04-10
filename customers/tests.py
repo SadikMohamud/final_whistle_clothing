@@ -117,6 +117,25 @@ class CustomerAuthFlowTests(TestCase):
 		self.assertEqual(response.status_code, 429)
 		self.assertContains(response, "Too many signup attempts", status_code=429)
 
+	def test_route_smoke_login_register_reset_pages(self):
+		login_response = self.client.get(reverse("customer_login"))
+		register_response = self.client.get(reverse("customer_register"))
+		reset_response = self.client.get("/accounts/password/reset/")
+
+		self.assertEqual(login_response.status_code, 200)
+		self.assertEqual(register_response.status_code, 200)
+		self.assertEqual(reset_response.status_code, 200)
+
+	def test_profile_route_redirects_when_logged_out(self):
+		response = self.client.get(reverse("customer_profile"))
+		self.assertEqual(response.status_code, 302)
+		self.assertIn(reverse("customer_login"), response.url)
+
+	def test_profile_route_accessible_when_logged_in(self):
+		self.client.force_login(self.user)
+		response = self.client.get(reverse("customer_profile"))
+		self.assertEqual(response.status_code, 200)
+
 	def test_password_reset_rate_limit_blocks_after_threshold(self):
 		for _ in range(2):
 			response = self.client.post("/accounts/password/reset/", {"email": self.user_email})
