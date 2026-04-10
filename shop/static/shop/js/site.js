@@ -361,11 +361,24 @@ function ensureGlobalBackButton() {
 
 ensureGlobalBackButton();
 
-if (cursor && ring) {
-  let mx = 0;
-  let my = 0;
-  let rx = 0;
-  let ry = 0;
+const canUseCustomCursor = Boolean(
+  cursor &&
+  ring &&
+  window.matchMedia('(hover: hover) and (pointer: fine)').matches
+);
+
+if (canUseCustomCursor) {
+  body.classList.add('custom-cursor-enabled');
+
+  let mx = window.innerWidth * 0.5;
+  let my = window.innerHeight * 0.5;
+  let rx = mx;
+  let ry = my;
+
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
 
   document.addEventListener('mousemove', (e) => {
     mx = e.clientX;
@@ -401,6 +414,8 @@ if (cursor && ring) {
       ring.style.borderColor = 'var(--volt)';
     });
   });
+} else {
+  body.classList.remove('custom-cursor-enabled');
 }
 
 const observer = new IntersectionObserver((entries) => {
