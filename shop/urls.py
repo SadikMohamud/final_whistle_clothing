@@ -6,6 +6,12 @@ from . import views
 urlpatterns = [
     path("", views.home, name="home"),
     path("story/", views.story_view, name="story"),
+    path("shipping/", views.shipping_view, name="shipping"),
+    path("returns/", views.returns_view, name="returns"),
+    path("contact/", views.contact_view, name="contact"),
+    path("faq/", views.faq_view, name="faq"),
+    path("privacy-policy/", views.privacy_view, name="privacy_policy"),
+    path("terms-of-service/", views.terms_view, name="terms_of_service"),
     path("api/products/", views.products_api, name="products_api"),
     path("products/<slug:handle>/", views.product_detail, name="product_detail"),
     path("collections/<slug:slug>/", views.collection_view, name="collection_view"),

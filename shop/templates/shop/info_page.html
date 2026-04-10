@@ -1,0 +1,69 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }} | Final Whistle Clothing{% endblock %}
+
+{% block extra_head %}
+  {% if faq_schema_json %}
+  <script type="application/ld+json">{{ faq_schema_json|safe }}</script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<main class="info-page" data-parallax-root>
+  <section class="info-hero">
+    <div class="info-hero-panel parallax-layer" data-parallax-speed="0.08">
+      <p class="info-eyebrow">{{ page_eyebrow }}</p>
+      <h1>{{ page_heading }}</h1>
+      <p class="info-intro">{{ page_intro }}</p>
+      {% if cta_label and cta_url %}
+      <a class="btn-primary info-cta" href="{{ cta_url }}">{{ cta_label }}</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="info-grid">
+    {% for section in sections %}
+    <article class="info-card fade-up">
+      <p class="info-card-title">{{ section.title }}</p>
+      <p class="info-card-text">{{ section.text }}</p>
+    </article>
+    {% endfor %}
+  </section>
+
+  {% if contact_form %}
+  <section class="info-contact-wrap">
+    <div class="info-contact-panel fade-up">
+      <div>
+        <p class="info-card-title">Send a message</p>
+        <p class="info-card-text">Use the form below for order support, product questions, or return requests.</p>
+      </div>
+      <form class="info-contact-form" method="post" action="{% url 'contact' %}">
+        {% csrf_token %}
+        <div class="info-form-row">
+          <label for="id_name">Name</label>
+          {{ contact_form.name }}
+          {{ contact_form.name.errors }}
+        </div>
+        <div class="info-form-row">
+          <label for="id_email">Email</label>
+          {{ contact_form.email }}
+          {{ contact_form.email.errors }}
+        </div>
+        <div class="info-form-row">
+          <label for="id_subject">Subject</label>
+          {{ contact_form.subject }}
+          {{ contact_form.subject.errors }}
+        </div>
+        <div class="info-form-row">
+          <label for="id_message">Message</label>
+          {{ contact_form.message }}
+          {{ contact_form.message.errors }}
+        </div>
+        <button type="submit" class="btn-primary">Send message</button>
+      </form>
+    </div>
+  </section>
+  {% endif %}
+</main>
+{% endblock %}

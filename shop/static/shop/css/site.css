@@ -1739,3 +1739,198 @@
   .hero-headline { animation: heroIn 0.9s ease 0.35s both; }
   .hero-ctas { animation: heroIn 0.8s ease 0.55s both; }
   .hero-stat-row { animation: heroIn 0.8s ease 0.7s both; }
+
+  /* ── INFO PAGES ── */
+  .info-page {
+    background:
+      radial-gradient(circle at top left, rgba(200, 245, 0, 0.08), transparent 28%),
+      radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.06), transparent 34%),
+      linear-gradient(180deg, var(--black) 0%, var(--mid) 100%);
+    padding: 72px 0 96px;
+  }
+
+  .info-hero,
+  .info-grid,
+  .info-contact-wrap {
+    width: min(1180px, calc(100vw - 32px));
+    margin: 0 auto;
+  }
+
+  .info-hero {
+    margin-bottom: 28px;
+  }
+
+  .info-hero-panel,
+  .info-contact-panel {
+    background: rgba(10, 10, 10, 0.64);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 28px;
+    backdrop-filter: blur(18px);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.24);
+  }
+
+  .info-hero-panel {
+    padding: 36px;
+    max-width: 860px;
+  }
+
+  .info-eyebrow,
+  .info-card-title {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .info-eyebrow {
+    color: rgba(245, 245, 240, 0.58);
+    margin-bottom: 12px;
+  }
+
+  .info-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 8vw, 92px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    max-width: 12ch;
+  }
+
+  .info-intro,
+  .info-card-text {
+    font-size: clamp(16px, 1.8vw, 19px);
+    line-height: 1.7;
+    color: rgba(245, 245, 240, 0.8);
+  }
+
+  .info-cta {
+    margin-top: 24px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .info-card {
+    grid-column: span 12;
+    background: rgba(12, 12, 12, 0.58);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 24px;
+  }
+
+  .info-card-title {
+    color: rgba(245, 245, 240, 0.55);
+    margin-bottom: 10px;
+  }
+
+  .info-card-text {
+    color: rgba(245, 245, 240, 0.82);
+  }
+
+  .info-contact-wrap {
+    margin-top: 18px;
+  }
+
+  .info-contact-panel {
+    display: grid;
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .info-contact-form {
+    display: grid;
+    gap: 16px;
+  }
+
+  .info-form-row {
+    display: grid;
+    gap: 8px;
+  }
+
+  .info-form-row label {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(245,245,240,0.62);
+  }
+
+  .info-form-row input,
+  .info-form-row textarea {
+    width: 100%;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    color: var(--white);
+    padding: 14px 16px;
+    font: inherit;
+    outline: none;
+  }
+
+  .info-form-row textarea {
+    min-height: 160px;
+    resize: vertical;
+  }
+
+  .info-form-row input:focus,
+  .info-form-row textarea:focus {
+    border-color: rgba(245,245,240,0.35);
+  }
+
+  .info-form-row .errorlist {
+    list-style: none;
+    color: #ffb8b8;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  body[data-theme='light'] .info-page {
+    background:
+      radial-gradient(circle at top left, rgba(16, 16, 16, 0.06), transparent 30%),
+      radial-gradient(circle at bottom right, rgba(16, 16, 16, 0.04), transparent 34%),
+      linear-gradient(180deg, #f7f7f2 0%, #ecece5 100%);
+  }
+
+  body[data-theme='light'] .info-hero-panel,
+  body[data-theme='light'] .info-contact-panel,
+  body[data-theme='light'] .info-card {
+    background: rgba(255, 255, 255, 0.76);
+    border-color: rgba(0,0,0,0.12);
+  }
+
+  body[data-theme='light'] .info-eyebrow,
+  body[data-theme='light'] .info-card-title {
+    color: rgba(16, 16, 16, 0.58);
+  }
+
+  body[data-theme='light'] .info-intro,
+  body[data-theme='light'] .info-card-text {
+    color: rgba(16, 16, 16, 0.82);
+  }
+
+  body[data-theme='light'] .info-form-row label {
+    color: rgba(16,16,16,0.62);
+  }
+
+  body[data-theme='light'] .info-form-row input,
+  body[data-theme='light'] .info-form-row textarea {
+    background: rgba(255,255,255,0.9);
+    color: #101010;
+    border-color: rgba(0,0,0,0.12);
+  }
+
+  @media (min-width: 900px) {
+    .info-card {
+      grid-column: span 6;
+    }
+
+    .info-contact-panel {
+      grid-template-columns: 0.9fr 1.1fr;
+      align-items: start;
+    }
+  }

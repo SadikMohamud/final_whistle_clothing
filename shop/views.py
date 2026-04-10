@@ -2,27 +2,63 @@ import base64
 import hashlib
 import hmac
 import json
+import logging
 from datetime import datetime, timedelta, timezone as dt_timezone
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from .models import HomepageCard, NewsletterSubscription
+from .forms import ContactForm
+from .seo_utils import get_faq_schema
 from .shopify import (
     fetch_product_by_handle,
     fetch_products_by_query,
     fetch_storefront_products,
 )
 from customers.models import CustomerOrder, CustomerProfile
+
+
+logger = logging.getLogger(__name__)
+
+
+def _info_page_context(
+    request,
+    *,
+    page_title: str,
+    page_eyebrow: str,
+    page_heading: str,
+    page_intro: str,
+    sections: list[dict],
+    cta_label: str | None = None,
+    cta_url: str | None = None,
+    contact_form: ContactForm | None = None,
+    faq_items: list[tuple[str, str]] | None = None,
+):
+    context = {
+        "page_title": page_title,
+        "page_eyebrow": page_eyebrow,
+        "page_heading": page_heading,
+        "page_intro": page_intro,
+        "sections": sections,
+        "cta_label": cta_label,
+        "cta_url": cta_url,
+        "contact_form": contact_form,
+    }
+    if faq_items:
+        context["faq_schema_json"] = json.dumps(get_faq_schema(faq_items))
+    return render(request, "shop/info_page.html", context)
 
 
 def home(request):
@@ -107,6 +143,300 @@ def story_view(request):
         ),
     }
     return render(request, "shop/story.html", context)
+
+
+def shipping_view(request):
+    sections = [
+        {
+            "title": "Drop 1 - Ready to ship",
+            "text": "Drop 1 items are in stock and ship directly from our headquarters once processing is complete.",
+        },
+        {
+            "title": "Processing time",
+            "text": "Please allow 1-2 business days for order processing before dispatch.",
+        },
+        {
+            "title": "Delivery in the Netherlands",
+            "text": "Orders delivered within the Netherlands typically arrive within 1-3 business days after dispatch.",
+        },
+        {
+            "title": "Drop 2 - Made to order",
+            "text": "Drop 2 products are made to order and produced specifically for you after purchase.",
+        },
+        {
+            "title": "International shipping",
+            "text": "Shipping times outside the Netherlands vary by destination. Rates and estimated delivery times are calculated at checkout.",
+        },
+        {
+            "title": "Tracking and order updates",
+            "text": "You will receive a tracking number as soon as your order has been handed to the carrier.",
+        },
+        {
+            "title": "Important shipping notes",
+            "text": "Orders containing both Drop 1 and Drop 2 items may arrive separately. Please review your shipping address carefully, as changes cannot be made once production has started.",
+        },
+    ]
+    return _info_page_context(
+        request,
+        page_title="Shipping Policy",
+        page_eyebrow="Info",
+        page_heading="Shipping Policy",
+        page_intro="Clear information on order processing, delivery timing, made-to-order production, and worldwide shipping.",
+        sections=sections,
+        cta_label="Browse products",
+        cta_url=reverse("collection_view", kwargs={"slug": "all"}),
+    )
+
+
+def returns_view(request):
+    sections = [
+        {
+            "title": "Return window",
+            "text": "Orders may be returned within 14 days of receipt.",
+        },
+        {
+            "title": "Condition requirements",
+            "text": "Items must be unworn, unwashed, unaltered, and returned with all original tags attached. Where possible, please include the original packaging.",
+        },
+        {
+            "title": "Return shipping",
+            "text": "Return shipping to our warehouse is at the customer’s expense unless the item is faulty or the order was sent in error.",
+        },
+        {
+            "title": "Refunds and exchanges",
+            "text": "Approved returns are processed as a refund or exchange, depending on the request and item eligibility. Refunds are issued to the original payment method.",
+        },
+        {
+            "title": "Processing time",
+            "text": "Refunds are typically processed within 7-10 business days once your return has been received and approved.",
+        },
+        {
+            "title": "Non-returnable items",
+            "text": "For hygiene reasons, underwear briefs, bodysuits, swimwear, and pierced jewellery cannot be returned or exchanged unless faulty.",
+        },
+        {
+            "title": "Faulty or damaged items",
+            "text": "If you receive a faulty, damaged, or incorrect item, please contact us with your order details and supporting photos so we can resolve the matter promptly.",
+        },
+    ]
+    return _info_page_context(
+        request,
+        page_title="Refund Policy",
+        page_eyebrow="Info",
+        page_heading="Refund Policy",
+        page_intro="A clear returns and refund policy designed to set expectations around eligibility, condition, and processing times.",
+        sections=sections,
+        cta_label="Contact us",
+        cta_url=reverse("contact"),
+    )
+
+
+def contact_view(request):
+    form = ContactForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        contact_email = settings.SEO_CONFIG["ORGANIZATION"]["contact_email"]
+        subject = f"Final Whistle Clothing contact: {form.cleaned_data['subject']}"
+        message = (
+            f"Name: {form.cleaned_data['name']}\n"
+            f"Email: {form.cleaned_data['email']}\n\n"
+            f"Message:\n{form.cleaned_data['message']}"
+        )
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [contact_email],
+                fail_silently=False,
+            )
+            messages.success(request, "Thanks, your message has been sent. We’ll reply as soon as possible.")
+            return redirect("contact")
+        except Exception:
+            logger.exception("Contact form failed to send")
+            messages.error(request, "Your message could not be sent right now. Please try again later.")
+
+    sections = [
+        {
+            "title": "General enquiries",
+            "text": f"Email us at {settings.SEO_CONFIG['ORGANIZATION']['contact_email']} for product, order, or brand questions.",
+        },
+        {
+            "title": "Response times",
+            "text": "We aim to reply as quickly as possible during business hours.",
+        },
+        {
+            "title": "Order support",
+            "text": "Include your order number if your message is about shipping, returns, or a delivery update.",
+        },
+    ]
+    return _info_page_context(
+        request,
+        page_title="Contact",
+        page_eyebrow="Info",
+        page_heading="Contact",
+        page_intro="Send us a message and we’ll get back to you with the right next step.",
+        sections=sections,
+        contact_form=form,
+        cta_label="Browse products",
+        cta_url=reverse("collection_view", kwargs={"slug": "all"}),
+    )
+
+
+def faq_view(request):
+    faq_items = [
+        (
+            "What is Final Whistle Clothing?",
+            "Final Whistle Clothing is a premium Dutch streetwear brand built around sharp silhouettes, everyday wearability, and a clean visual language.",
+        ),
+        (
+            "How much is shipping?",
+            "Shipping is free on orders above €100. Below that threshold, the standard shipping rate is shown at checkout.",
+        ),
+        (
+            "How long does delivery take?",
+            "Orders placed before 22:00 are prepared for next-business-day delivery in the Netherlands.",
+        ),
+        (
+            "What is your return policy?",
+            "You have 30 days to request a return or exchange for eligible items.",
+        ),
+        (
+            "How do I contact support?",
+            "Use the contact page form or email us directly for order support and brand enquiries.",
+        ),
+    ]
+    sections = [
+        {
+            "title": question,
+            "text": answer,
+        } for question, answer in faq_items
+    ]
+    context = _info_page_context(
+        request,
+        page_title="FAQ",
+        page_eyebrow="Info",
+        page_heading="FAQ",
+        page_intro="Quick answers to the questions customers ask most often.",
+        sections=sections,
+        cta_label="Contact us",
+        cta_url=reverse("contact"),
+        faq_items=faq_items,
+    )
+    return context
+
+
+def privacy_view(request):
+    sections = [
+        {
+            "title": "Collecting personal information",
+            "text": (
+                "When you visit the Site or place an order, we may collect information about your device, your browsing activity, and the details needed to process purchases or support requests."
+            ),
+        },
+        {
+            "title": "Device and order information",
+            "text": (
+                "Device information may include browser version, IP address, time zone, cookies, and browsing behaviour. Order information may include your name, billing and shipping details, payment information, email address, and phone number."
+            ),
+        },
+        {
+            "title": "How we use your information",
+            "text": (
+                "We use personal information to provide our services, fulfil orders, process payments, arrange shipping, send order confirmations, improve the Site, and respond to customer support requests."
+            ),
+        },
+        {
+            "title": "Sharing personal information",
+            "text": (
+                "We share personal information only where necessary to operate the Site, fulfil orders, comply with legal obligations, or work with service providers that help us deliver our services."
+            ),
+        },
+        {
+            "title": "Cookies and tracking technologies",
+            "text": (
+                "We use cookies and similar technologies to remember preferences, keep the Site functioning properly, and understand how visitors use the Site. You can manage cookies through your browser settings."
+            ),
+        },
+        {
+            "title": "Your rights",
+            "text": (
+                "Depending on your location, you may have the right to access, correct, update, export, or request deletion of your personal information. To exercise your rights or raise a privacy concern, contact us using the details below."
+            ),
+        },
+        {
+            "title": "Contact information",
+            "text": (
+                "For privacy-related questions or complaints, please contact finalwhistleclothing@gmail.com. If required by law, you may also contact your local data protection authority."
+            ),
+        },
+    ]
+    return _info_page_context(
+        request,
+        page_title="Privacy Policy",
+        page_eyebrow="Legal",
+        page_heading="Privacy Policy",
+        page_intro=(
+            "This policy explains how Final Whistle Clothing collects, uses, stores, and shares personal information when you use the Site or place an order."
+        ),
+        sections=sections,
+        cta_label="Contact us",
+        cta_url=reverse("contact"),
+    )
+
+
+def terms_view(request):
+    sections = [
+        {
+            "title": "Overview",
+            "text": "By visiting this Site or placing an order, you agree to the Terms of Service and any related policies referenced on the Site.",
+        },
+        {
+            "title": "Online store terms",
+            "text": "You may not use the Site for unlawful purposes, violate applicable laws, or transmit malicious code or disruptive content.",
+        },
+        {
+            "title": "General conditions",
+            "text": "We reserve the right to refuse service at any time and to modify or discontinue the Site, features, or pricing without notice.",
+        },
+        {
+            "title": "Products and services",
+            "text": "Product availability, descriptions, and pricing may change without notice. We do not guarantee that every detail will always be current or error-free.",
+        },
+        {
+            "title": "Billing and account information",
+            "text": "You agree to provide current, complete, and accurate purchase and account information and to keep those details up to date when needed.",
+        },
+        {
+            "title": "Third-party links and tools",
+            "text": "Any third-party links or tools are provided for convenience only and are used at your own risk under the applicable third-party terms.",
+        },
+        {
+            "title": "User submissions",
+            "text": "If you send comments, suggestions, or other submissions to us, you grant us the right to use them without obligation to maintain them in confidence or provide compensation.",
+        },
+        {
+            "title": "Liability and indemnification",
+            "text": "Use of the Site is at your own risk. To the fullest extent permitted by law, FINAL WHISTLE is not liable for indirect or consequential losses arising from use of the Site or its services.",
+        },
+        {
+            "title": "Governing law and changes",
+            "text": "These Terms are governed by the laws of the Netherlands. We may update the Terms from time to time, and continued use of the Site indicates acceptance of those changes.",
+        },
+        {
+            "title": "Contact information",
+            "text": "Questions about these Terms of Service can be sent to finalwhistleclothing@gmail.com.",
+        },
+    ]
+    return _info_page_context(
+        request,
+        page_title="Terms of Service",
+        page_eyebrow="Legal",
+        page_heading="Terms of Service",
+        page_intro="These Terms explain how the Site may be used, what governs purchases, and the expectations that apply to customers and visitors.",
+        sections=sections,
+        cta_label="Privacy Policy",
+        cta_url=reverse("privacy_policy"),
+    )
 
 
 @login_required(login_url='customer_login')
@@ -494,6 +824,14 @@ def sitemap_xml(request):
         <lastmod>{today}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
+    </url>
+
+    <!-- Privacy Policy -->
+    <url>
+        <loc>{site_url}/privacy-policy/</loc>
+        <lastmod>{today}</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.4</priority>
     </url>
     
 </urlset>"""

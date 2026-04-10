@@ -59,3 +59,31 @@ class LanguageMiddlewareTests(TestCase):
 		self.assertContains(response, "shop/images/story/fwc-detail-main.webp")
 		self.assertContains(response, "shop/images/story/fwc-03.webp")
 		self.assertContains(response, "shop/images/story/fwc-04.webp")
+
+	def test_privacy_policy_page_renders_professional_copy(self):
+		response = self.client.get("/privacy-policy/")
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "Privacy Policy")
+		self.assertContains(response, "Collecting personal information")
+		self.assertContains(response, "Cookies and tracking technologies")
+
+	def test_shipping_page_renders_professional_copy(self):
+		response = self.client.get("/shipping/")
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "Shipping Policy")
+		self.assertContains(response, "Drop 1 - Ready to ship")
+		self.assertContains(response, "Drop 2 - Made to order")
+
+	def test_returns_page_renders_professional_copy(self):
+		response = self.client.get("/returns/")
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "Refund Policy")
+		self.assertContains(response, "Orders may be returned within 14 days of receipt")
+		self.assertContains(response, "Refunds are typically processed within 7-10 business days")
+
+	def test_terms_page_renders_professional_copy(self):
+		response = self.client.get("/terms-of-service/")
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "Terms of Service")
+		self.assertContains(response, "Overview")
+		self.assertContains(response, "Governing law and changes")
