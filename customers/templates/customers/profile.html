@@ -12,7 +12,12 @@
   <style>
     .account-topbar { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; }
     .account-shell { width: 100%; max-width: 1040px; margin: 0 auto; padding: 84px 14px 28px; }
+    .account-hero { border: 1px solid var(--border); background: rgba(8,8,8,0.9); padding: 16px; margin-bottom: 12px; }
     .account-title { font-family: var(--font-display); font-size: clamp(30px, 13vw, 52px); line-height: 0.95; text-transform: uppercase; margin-bottom: 16px; }
+    .account-sub { color: rgba(245,245,240,0.62); font-size: 14px; margin-bottom: 14px; max-width: 62ch; }
+    .account-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .account-actions .btn-primary,
+    .account-actions .account-link { min-width: 180px; text-align: center; }
     .account-nav { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px; }
     .account-link { border: 1px solid var(--border); color: var(--white); text-decoration: none; padding: 11px 12px; font-family: var(--font-display); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
     .account-link:hover { border-color: var(--volt); color: var(--volt); }
@@ -21,6 +26,29 @@
     .panel h2 { font-family: var(--font-display); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
     .meta { color: rgba(245,245,240,0.62); font-size: 13px; line-height: 1.6; }
     .stat { font-family: var(--font-display); font-size: 32px; line-height: 1; color: var(--volt); margin-bottom: 4px; }
+    body[data-theme='light'] .account-hero,
+    body[data-theme='light'] .panel {
+      background: rgba(255,255,255,0.82);
+      border-color: rgba(0,0,0,0.14);
+      box-shadow: 0 14px 32px rgba(14, 22, 6, 0.08);
+    }
+    body[data-theme='light'] .account-title,
+    body[data-theme='light'] .panel h2,
+    body[data-theme='light'] .account-link {
+      color: #101010;
+    }
+    body[data-theme='light'] .account-sub,
+    body[data-theme='light'] .meta {
+      color: rgba(16,16,16,0.7);
+    }
+    body[data-theme='light'] .account-link {
+      border-color: rgba(0,0,0,0.2);
+      background: #f8f8f3;
+    }
+    body[data-theme='light'] .account-link:hover {
+      color: var(--volt);
+      border-color: var(--volt);
+    }
     @media (min-width: 700px) {
       .account-shell { padding: 94px 20px 34px; }
       .account-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -42,7 +70,14 @@
   </div>
 
   <main class="account-shell">
-    <h1 class="account-title">My Account</h1>
+    <section class="account-hero fade-up visible">
+      <h1 class="account-title">My Account</h1>
+      <p class="account-sub">Welcome back. Manage your details, track orders, and jump straight into the latest drops.</p>
+      <div class="account-actions">
+        <a class="btn-primary" href="{% url 'home' %}">Browse Products</a>
+        <a class="account-link" href="{% url 'home' %}#shop">Shop Collection</a>
+      </div>
+    </section>
 
     <nav class="account-nav">
       <a class="account-link" href="{% url 'customer_profile_edit' %}">Edit Profile</a>

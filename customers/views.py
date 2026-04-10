@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.cache import never_cache
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
@@ -24,6 +25,7 @@ from .models import (
 from .address_formats import get_address_format, get_browser_language_to_country
 
 
+@never_cache
 def register_view(request):
     """User registration with email"""
     google_social_app = SocialApp.objects.filter(provider='google').exists()
@@ -99,6 +101,7 @@ def register_view(request):
     })
 
 
+@never_cache
 def login_view(request):
     """User login with email/password"""
     google_social_app = SocialApp.objects.filter(provider='google').exists()
