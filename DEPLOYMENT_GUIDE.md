@@ -78,6 +78,36 @@ Notes:
 
 ## 5. Release Preparation Checklist
 
+### 5.1 Production Preflight (Config Vars)
+
+Run this command before each release:
+
+```powershell
+heroku config --app <app-name>
+```
+
+Confirm these values are present and non-empty:
+
+1. `DJANGO_SECRET_KEY`
+2. `DJANGO_DEBUG` set to `False`
+3. `DJANGO_ALLOWED_HOSTS` with explicit production domains only (no wildcards/local hosts)
+4. `DJANGO_CSRF_TRUSTED_ORIGINS` with explicit https origins only (no wildcards/local origins)
+5. `EMAIL_BACKEND`
+6. `DEFAULT_FROM_EMAIL`
+7. If `EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend`:
+8. `EMAIL_HOST`
+9. `EMAIL_HOST_USER`
+10. `EMAIL_HOST_PASSWORD`
+11. `EMAIL_PORT`
+12. `EMAIL_USE_TLS` / `EMAIL_USE_SSL` are valid for selected port
+
+Notes:
+
+1. Shopify tokens/secrets can stay pending until integration day.
+2. If `SHOPIFY_STORE_DOMAIN` is set in production, `SHOPIFY_WEBHOOK_SECRET` must also be set.
+
+### 5.2 Local Validation Gate
+
 Run locally from repo root:
 
 ```powershell
@@ -95,6 +125,12 @@ Release gate criteria:
    1. Procfile
    2. requirements.txt
    3. .python-version
+
+Fast gate command:
+
+```powershell
+python manage.py check && python manage.py test shop customers
+```
 
 ## 6. Deploy to Heroku
 
