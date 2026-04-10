@@ -6,6 +6,38 @@ let themeSwitchInput = null;
 const root = document.documentElement;
 const body = document.body;
 
+function safeStorageGet(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (error) {
+    return null;
+  }
+}
+
+function safeStorageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    // Ignore storage failures (private mode, blocked storage, etc.).
+  }
+}
+
+function syncLanguageSession(lang) {
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    fetch(url.toString(), {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: { 'X-FWC-Lang-Sync': '1' }
+    }).catch(() => {
+      // Best-effort sync only.
+    });
+  } catch (error) {
+    // Ignore URL/fetch failures.
+  }
+}
+
 const translations = {
   nl: {
     page_title: 'Final Whistle Clothing',
@@ -266,14 +298,15 @@ function applyLanguage(lang) {
     langToggle.textContent = safeLang.toUpperCase();
   }
 
-  localStorage.setItem('fwcLang', safeLang);
+  safeStorageSet('fwcLang', safeLang);
+  syncLanguageSession(safeLang);
   syncThemeToggleState();
 }
 
 function applyTheme(theme) {
   const safeTheme = theme === 'light' ? 'light' : 'dark';
   body.setAttribute('data-theme', safeTheme);
-  localStorage.setItem('fwcTheme', safeTheme);
+  safeStorageSet('fwcTheme', safeTheme);
   syncThemeToggleState();
 }
 
@@ -291,7 +324,7 @@ function renderThemeToggleSwitch() {
     return;
   }
 
-  const currentTheme = localStorage.getItem('fwcTheme') || 'dark';
+  const currentTheme = safeStorageGet('fwcTheme') || 'dark';
   const switchLabel = document.createElement('label');
   switchLabel.className = 'switch';
   switchLabel.setAttribute('aria-label', 'Toggle theme');
@@ -341,8 +374,9 @@ if (themeToggle) {
   renderThemeToggleSwitch();
 }
 
-const initialTheme = localStorage.getItem('fwcTheme') || 'dark';
-const initialLang = localStorage.getItem('fwcLang') || 'en';
+const initialTheme = safeStorageGet('fwcTheme') || 'dark';
+const serverLang = root.getAttribute('data-lang');
+const initialLang = safeStorageGet('fwcLang') || (translations[serverLang] ? serverLang : 'en');
 applyTheme(initialTheme);
 applyLanguage(initialLang);
 
