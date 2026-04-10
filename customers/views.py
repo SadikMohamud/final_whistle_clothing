@@ -146,7 +146,8 @@ def register_view(request):
                 'email': email,
             })
         
-        except Exception as e:
+        except Exception:
+            logger.exception("Registration failed for email=%s", email)
             attempts = _record_auth_failure(rate_limit_key)
             errors.append('Registration failed. Please try again.')
             if attempts >= max_register_attempts:
