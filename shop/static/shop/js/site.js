@@ -242,7 +242,7 @@ const translations = {
 };
 
 function applyLanguage(lang) {
-  const safeLang = translations[lang] ? lang : 'nl';
+  const safeLang = translations[lang] ? lang : 'en';
   root.setAttribute('lang', safeLang);
   root.setAttribute('data-lang', safeLang);
 

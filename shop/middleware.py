@@ -72,13 +72,18 @@ class LanguageMiddleware(MiddlewareMixin):
             translation.activate("en")
             return None
         
-        # Get language from GET parameter, session, or accept-language header
-        lang = request.GET.get("lang")
-        
-        if lang:
-            request.session["fwc_lang"] = lang
+        supported_languages = {"en", "nl"}
+
+        # Get language from GET parameter, then session, then default.
+        requested_lang = (request.GET.get("lang") or "").strip().lower()
+        if requested_lang in supported_languages:
+            lang = requested_lang
         else:
-            lang = request.session.get("fwc_lang", self._get_default_language(request))
+            session_lang = (request.session.get("fwc_lang") or "").strip().lower()
+            lang = session_lang if session_lang in supported_languages else self._get_default_language(request)
+
+        # Persist normalized language so all page shells stay in sync.
+        request.session["fwc_lang"] = lang
         
         # Store in request for use in templates
         request.fwc_lang = lang
