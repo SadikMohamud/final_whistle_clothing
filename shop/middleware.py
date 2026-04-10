@@ -88,15 +88,9 @@ class LanguageMiddleware(MiddlewareMixin):
     def _get_default_language(self, request):
         """
         Determine default language from Accept-Language header
-        Falls back to Dutch (nl) if not recognized
+        Falls back to English (en) if not recognized
         """
-        accept_language = request.META.get("HTTP_ACCEPT_LANGUAGE", "")
-        
-        if "en" in accept_language:
-            return "en"
-        
-        # Default to Dutch
-        return "nl"
+        return "en"
 
 
 class SecurityHeadersMiddleware(MiddlewareMixin):

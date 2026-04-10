@@ -302,7 +302,7 @@ if (themeToggle) {
 }
 
 const initialTheme = localStorage.getItem('fwcTheme') || 'dark';
-const initialLang = localStorage.getItem('fwcLang') || 'nl';
+const initialLang = localStorage.getItem('fwcLang') || 'en';
 applyTheme(initialTheme);
 applyLanguage(initialLang);
 
