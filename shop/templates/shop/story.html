@@ -58,7 +58,7 @@
     background:
       radial-gradient(circle at top left, rgba(200, 245, 0, 0.08), transparent 28%),
       radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.06), transparent 34%),
-      linear-gradient(180deg, #080808 0%, #0c0c0c 100%);
+      linear-gradient(180deg, var(--black) 0%, var(--mid) 100%);
   }
 
   .story-hero,
@@ -202,6 +202,43 @@
   .story-close-card .btn-primary {
     display: inline-flex;
     margin-top: 18px;
+  }
+
+  body[data-theme='light'] .story-page {
+    background:
+      radial-gradient(circle at top left, rgba(16, 16, 16, 0.06), transparent 30%),
+      radial-gradient(circle at bottom right, rgba(16, 16, 16, 0.04), transparent 34%),
+      linear-gradient(180deg, #f7f7f2 0%, #ecece5 100%);
+  }
+
+  body[data-theme='light'] .story-hero-bg {
+    background:
+      radial-gradient(circle at 20% 20%, rgba(16, 16, 16, 0.08), transparent 24%),
+      radial-gradient(circle at 78% 40%, rgba(16, 16, 16, 0.06), transparent 20%),
+      linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.35));
+    border-color: rgba(0,0,0,0.08);
+  }
+
+  body[data-theme='light'] .story-kicker,
+  body[data-theme='light'] .story-section-label {
+    color: rgba(16, 16, 16, 0.62);
+  }
+
+  body[data-theme='light'] .story-intro,
+  body[data-theme='light'] .story-section-text {
+    color: rgba(16, 16, 16, 0.84);
+  }
+
+  body[data-theme='light'] .story-panel,
+  body[data-theme='light'] .story-close-card {
+    background: rgba(255, 255, 255, 0.76);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+
+  body[data-theme='light'] .story-hero-image,
+  body[data-theme='light'] .story-image {
+    border-color: rgba(0,0,0,0.12);
+    box-shadow: 0 18px 54px rgba(0,0,0,0.14);
   }
 
   @media (min-width: 980px) {
