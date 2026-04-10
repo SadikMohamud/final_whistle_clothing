@@ -239,6 +239,7 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() == "true"
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "False").lower() == "true"
+EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@finalwhistleclothing.com")
 
 if IS_PRODUCTION and not EMAIL_BACKEND:
@@ -255,8 +256,16 @@ if EMAIL_USE_TLS and EMAIL_USE_SSL:
 if IS_PRODUCTION and EMAIL_BACKEND == "django.core.mail.backends.smtp.EmailBackend":
 	if not EMAIL_HOST:
 		raise ImproperlyConfigured("EMAIL_HOST must be set for SMTP backend in production.")
+	if not EMAIL_HOST_USER:
+		raise ImproperlyConfigured("EMAIL_HOST_USER must be set for SMTP backend in production.")
+	if not EMAIL_HOST_PASSWORD:
+		raise ImproperlyConfigured("EMAIL_HOST_PASSWORD must be set for SMTP backend in production.")
 	if not DEFAULT_FROM_EMAIL:
 		raise ImproperlyConfigured("DEFAULT_FROM_EMAIL must be set in production.")
+	if EMAIL_PORT == 465 and not EMAIL_USE_SSL:
+		raise ImproperlyConfigured("EMAIL_USE_SSL must be True when EMAIL_PORT is 465.")
+	if EMAIL_PORT != 465 and not EMAIL_USE_TLS:
+		raise ImproperlyConfigured("EMAIL_USE_TLS must be True for non-465 SMTP ports in production.")
 
 # Security & SEO Headers
 SECURE_BROWSER_XSS_FILTER = True

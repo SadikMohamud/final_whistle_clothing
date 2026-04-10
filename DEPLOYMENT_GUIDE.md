@@ -56,6 +56,26 @@ heroku config:set GOOGLE_OAUTH2_KEY=<value> --app <app-name>
 heroku config:set GOOGLE_OAUTH2_SECRET=<value> --app <app-name>
 ```
 
+Production email variables (Mailtrap-ready):
+
+```powershell
+heroku config:set EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend --app <app-name>
+heroku config:set EMAIL_HOST=sandbox.smtp.mailtrap.io --app <app-name>
+heroku config:set EMAIL_PORT=587 --app <app-name>
+heroku config:set EMAIL_HOST_USER=<mailtrap-username> --app <app-name>
+heroku config:set EMAIL_HOST_PASSWORD=<mailtrap-password> --app <app-name>
+heroku config:set EMAIL_USE_TLS=True --app <app-name>
+heroku config:set EMAIL_USE_SSL=False --app <app-name>
+heroku config:set EMAIL_TIMEOUT=10 --app <app-name>
+heroku config:set DEFAULT_FROM_EMAIL=no-reply@finalwhistleclothing.com --app <app-name>
+```
+
+Notes:
+
+1. Keep `EMAIL_USE_TLS=True` for Mailtrap port `587`.
+2. Do not keep production on the console backend once SMTP credentials are available.
+3. Rotate Mailtrap credentials if they are exposed.
+
 ## 5. Release Preparation Checklist
 
 Run locally from repo root:
@@ -161,6 +181,7 @@ heroku releases --app <app-name>
 3. 500 on startup: bad env var or migration mismatch.
 4. Missing CSS/JS: collectstatic or WhiteNoise manifest issue.
 5. OAuth loop or wrong page: route overrides or provider misconfiguration.
+6. Password reset email not delivered: invalid SMTP host/user/password or TLS/port mismatch.
 
 See docs/TROUBLESHOOTING.md for deep diagnostics.
 
