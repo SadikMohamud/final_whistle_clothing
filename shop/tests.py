@@ -50,3 +50,12 @@ class LanguageMiddlewareTests(TestCase):
 		response = self.client.get("/account/profile/")
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(response["Cache-Control"], "no-store, max-age=0")
+
+	def test_story_page_renders_webp_assets(self):
+		response = self.client.get("/story/")
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "shop/images/story/fwc-studio-01.webp")
+		self.assertContains(response, "shop/images/story/fwc-studio-02.webp")
+		self.assertContains(response, "shop/images/story/fwc-detail-main.webp")
+		self.assertContains(response, "shop/images/story/fwc-03.webp")
+		self.assertContains(response, "shop/images/story/fwc-04.webp")
