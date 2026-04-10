@@ -30,6 +30,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", default_debug).lower() == "true"
 AUTH_RATE_LIMIT_WINDOW_SECONDS = int(os.getenv("AUTH_RATE_LIMIT_WINDOW_SECONDS", "300"))
 AUTH_LOGIN_MAX_ATTEMPTS = int(os.getenv("AUTH_LOGIN_MAX_ATTEMPTS", "5"))
 AUTH_REGISTER_MAX_ATTEMPTS = int(os.getenv("AUTH_REGISTER_MAX_ATTEMPTS", "6"))
+AUTH_PASSWORD_RESET_MAX_ATTEMPTS = int(os.getenv("AUTH_PASSWORD_RESET_MAX_ATTEMPTS", "5"))
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-change-me" if not IS_PRODUCTION else "").strip()
 if IS_PRODUCTION and not SECRET_KEY:
@@ -86,6 +87,7 @@ MIDDLEWARE = [
 	"allauth.account.middleware.AccountMiddleware",
 	"django.contrib.messages.middleware.MessageMiddleware",
 	"django.middleware.clickjacking.XFrameOptionsMiddleware",
+	"shop.middleware.PasswordResetRateLimitMiddleware",
 	"shop.middleware.SEOHeadersMiddleware",
 	"shop.middleware.LanguageMiddleware",
 	"shop.middleware.SecurityHeadersMiddleware",

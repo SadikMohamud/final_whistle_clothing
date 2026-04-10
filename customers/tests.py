@@ -14,6 +14,7 @@ from django.urls import reverse
 	AUTH_RATE_LIMIT_WINDOW_SECONDS=300,
 	AUTH_LOGIN_MAX_ATTEMPTS=3,
 	AUTH_REGISTER_MAX_ATTEMPTS=3,
+	AUTH_PASSWORD_RESET_MAX_ATTEMPTS=2,
 )
 class CustomerAuthFlowTests(TestCase):
 	def setUp(self):
@@ -115,3 +116,12 @@ class CustomerAuthFlowTests(TestCase):
 
 		self.assertEqual(response.status_code, 429)
 		self.assertContains(response, "Too many signup attempts", status_code=429)
+
+	def test_password_reset_rate_limit_blocks_after_threshold(self):
+		for _ in range(2):
+			response = self.client.post("/accounts/password/reset/", {"email": self.user_email})
+			self.assertEqual(response.status_code, 302)
+
+		blocked_response = self.client.post("/accounts/password/reset/", {"email": self.user_email})
+		self.assertEqual(blocked_response.status_code, 429)
+		self.assertContains(blocked_response, "Too many password reset attempts", status_code=429)

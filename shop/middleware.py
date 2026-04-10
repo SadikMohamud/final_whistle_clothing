@@ -4,6 +4,8 @@ Handles SEO-related headers and response optimization
 """
 
 from django.conf import settings
+from django.core.cache import cache
+from django.http import HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 from django.utils import translation
 
@@ -125,3 +127,38 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
             response["Content-Security-Policy"] = csp_directive
         
         return response
+
+
+class PasswordResetRateLimitMiddleware(MiddlewareMixin):
+    """Throttle password-reset POST attempts to reduce abuse."""
+
+    def process_request(self, request):
+        if request.method != "POST":
+            return None
+
+        if not request.path.startswith("/accounts/password/reset/"):
+            return None
+
+        max_attempts = max(1, int(getattr(settings, "AUTH_PASSWORD_RESET_MAX_ATTEMPTS", 5)))
+        window_seconds = max(1, int(getattr(settings, "AUTH_RATE_LIMIT_WINDOW_SECONDS", 300)))
+        email = (request.POST.get("email") or "").strip().lower()[:120]
+        client_ip = self._client_ip(request)
+        cache_key = f"auth_rl:password_reset:{client_ip}:{email or 'anonymous'}"
+
+        attempts = int(cache.get(cache_key, 0) or 0)
+        if attempts >= max_attempts:
+            return HttpResponse(
+                "Too many password reset attempts. Please try again in a few minutes.",
+                status=429,
+                content_type="text/plain",
+            )
+
+        cache.set(cache_key, attempts + 1, timeout=window_seconds)
+        return None
+
+    @staticmethod
+    def _client_ip(request):
+        forwarded_for = (request.META.get("HTTP_X_FORWARDED_FOR") or "").strip()
+        if forwarded_for:
+            return forwarded_for.split(",")[0].strip()
+        return (request.META.get("REMOTE_ADDR") or "unknown").strip()
