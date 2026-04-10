@@ -45,10 +45,19 @@ class SEOHeadersMiddleware(MiddlewareMixin):
         
         # Controls DNS prefetching
         response["X-DNS-Prefetch-Control"] = "on"
+
+        account_or_admin_path = (
+            request.path.startswith("/account/")
+            or request.path.startswith("/accounts/")
+            or request.path.startswith("/admin/")
+        )
         
         # Cache control for static assets
         if request.path.startswith("/static/"):
             response["Cache-Control"] = "public, max-age=31536000, immutable"
+        # Never cache account/admin pages or authenticated HTML responses.
+        elif account_or_admin_path or getattr(request, "user", None) and request.user.is_authenticated:
+            response["Cache-Control"] = "no-store, max-age=0"
         # Cache control for HTML pages (shorter cache, allow validation)
         elif response.get("Content-Type", "").startswith("text/html"):
             response["Cache-Control"] = "public, max-age=3600, must-revalidate"
