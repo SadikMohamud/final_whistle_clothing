@@ -2,6 +2,8 @@
 Views for customer authentication and profile management
 """
 
+import logging
+
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
@@ -25,6 +27,9 @@ from .models import (
     CustomerNotification,
 )
 from .address_formats import get_address_format, get_browser_language_to_country
+
+
+logger = logging.getLogger(__name__)
 
 
 def _client_ip(request) -> str:
@@ -273,10 +278,11 @@ def profile_edit_view(request):
                     'message_type': 'success',
                 })
         
-        except Exception as e:
+        except Exception:
+            logger.exception("Profile update failed for user_id=%s", request.user.id)
             return render(request, 'customers/profile_edit.html', {
                 'profile': profile,
-                'error': f'Failed to update profile: {str(e)}',
+                'error': 'Failed to update profile. Please try again.',
             })
     
     return render(request, 'customers/profile_edit.html', {'profile': profile})
@@ -338,8 +344,9 @@ def add_address_view(request):
         messages.success(request, 'Address added successfully!')
         return redirect('customer_addresses')
     
-    except Exception as e:
-        messages.error(request, f'Failed to add address: {str(e)}')
+    except Exception:
+        logger.exception("Address creation failed for user_id=%s", request.user.id)
+        messages.error(request, 'Failed to add address. Please check your details and try again.')
         
         # Re-render form with error
         accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', 'nl-NL')
@@ -408,8 +415,9 @@ def notifications_view(request):
             message = 'Notification preferences updated successfully!'
             message_type = 'success'
         
-        except Exception as e:
-            message = f'Failed to update preferences: {str(e)}'
+        except Exception:
+            logger.exception("Notification preferences update failed for user_id=%s", request.user.id)
+            message = 'Failed to update preferences. Please try again.'
             message_type = 'error'
         
         return render(request, 'customers/notifications.html', {
