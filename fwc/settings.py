@@ -230,13 +230,22 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() == "true"
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "False").lower() == "true"
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@finalwhistleclothing.com")
 
-if not EMAIL_BACKEND:
-	# Avoid runtime 500s on password reset when SMTP is not configured.
-	EMAIL_BACKEND = (
-		"django.core.mail.backends.smtp.EmailBackend"
-		if EMAIL_HOST
-		else "django.core.mail.backends.console.EmailBackend"
+if IS_PRODUCTION and not EMAIL_BACKEND:
+	raise ImproperlyConfigured(
+		"EMAIL_BACKEND must be explicitly set in production."
 	)
+
+if not EMAIL_BACKEND:
+	EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+if EMAIL_USE_TLS and EMAIL_USE_SSL:
+	raise ImproperlyConfigured("EMAIL_USE_TLS and EMAIL_USE_SSL cannot both be True.")
+
+if IS_PRODUCTION and EMAIL_BACKEND == "django.core.mail.backends.smtp.EmailBackend":
+	if not EMAIL_HOST:
+		raise ImproperlyConfigured("EMAIL_HOST must be set for SMTP backend in production.")
+	if not DEFAULT_FROM_EMAIL:
+		raise ImproperlyConfigured("DEFAULT_FROM_EMAIL must be set in production.")
 
 # Security & SEO Headers
 SECURE_BROWSER_XSS_FILTER = True
