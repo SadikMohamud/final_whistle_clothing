@@ -37,6 +37,17 @@ if IS_PRODUCTION and not allowed_hosts_raw:
 	raise ImproperlyConfigured("DJANGO_ALLOWED_HOSTS must be set in production.")
 ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_raw.split(",") if h.strip()]
 
+if IS_PRODUCTION:
+	for host in ALLOWED_HOSTS:
+		if "*" in host or host.startswith("."):
+			raise ImproperlyConfigured(
+				"DJANGO_ALLOWED_HOSTS must use explicit domains in production (no wildcards)."
+			)
+		if host in {"localhost", "127.0.0.1"}:
+			raise ImproperlyConfigured(
+				"DJANGO_ALLOWED_HOSTS must not include local hosts in production."
+			)
+
 INSTALLED_APPS = [
 	"django.contrib.admin",
 	"django.contrib.auth",
@@ -274,6 +285,19 @@ CSRF_TRUSTED_ORIGINS = [
 
 if IS_PRODUCTION and not CSRF_TRUSTED_ORIGINS:
 	raise ImproperlyConfigured("DJANGO_CSRF_TRUSTED_ORIGINS must be set in production.")
+
+if IS_PRODUCTION:
+	for origin in CSRF_TRUSTED_ORIGINS:
+		parsed_origin = urlparse(origin)
+		origin_host = parsed_origin.hostname or ""
+		if "*" in origin or origin_host.startswith("."):
+			raise ImproperlyConfigured(
+				"DJANGO_CSRF_TRUSTED_ORIGINS must use explicit domains in production (no wildcards)."
+			)
+		if origin_host in {"localhost", "127.0.0.1"}:
+			raise ImproperlyConfigured(
+				"DJANGO_CSRF_TRUSTED_ORIGINS must not include local hosts in production."
+			)
 
 SECURE_CONTENT_SECURITY_POLICY = {
 	"default-src": ("'self'",),
