@@ -662,14 +662,14 @@ initParallax();
 function initScrollBlur() {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion) {
-    return;
+      syncThemeToggleState();
   }
 
   const selector = [
     '.hero-eyebrow',
     '.hero-headline',
     '.hero-ctas',
-    '.hero-stat-row',
+      syncThemeToggleState();
     '.section-header',
     '.product-card',
     '.campaign-eyebrow',
