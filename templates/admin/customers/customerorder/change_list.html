@@ -3,26 +3,27 @@
 {% block extrahead %}
   {{ block.super }}
   <style>
-    .fw-admin-strip{margin:10px 0 16px;padding:18px;border-radius:16px;background:linear-gradient(135deg,#f7f8ff 0,#f1f4ff 100%);border:1px solid #e4e9ff}
-    .fw-admin-title{margin:0 0 12px;font-size:30px;line-height:1.1;color:#1d2448;letter-spacing:-.02em}
-    .fw-admin-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-    .fw-kpi{background:#fff;border:1px solid #e7ebf9;border-radius:12px;padding:12px}
-    .fw-kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7b86ab;margin-bottom:8px}
-    .fw-kpi-value{font-size:24px;font-weight:700;color:#1f264a;line-height:1}
-    .fw-revenue{background:linear-gradient(135deg,#5c62f3 0,#7784ff 100%);color:#fff;border-color:#6169f3}
+    .fw-admin-strip{margin:12px 0 20px;padding:24px;border-radius:16px;background:linear-gradient(135deg,#f8fafb 0,#f3f6f9 100%);border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.02)}
+    .fw-admin-title{margin:0 0 16px;font-size:28px;line-height:1.14;color:#0f172a;letter-spacing:-.025em;font-weight:600}
+    .fw-admin-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .fw-kpi{background:#fff;border:1px solid #e8ecf1;border-radius:14px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+    .fw-kpi-label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:8px;font-weight:600}
+    .fw-kpi-value{font-size:28px;font-weight:700;color:#1e293b;line-height:1.1}
+    .fw-revenue{background:linear-gradient(135deg,#5a67d8 0,#6d82d9 100%);color:#fff;border-color:#5a67d8}
     .fw-revenue .fw-kpi-label,.fw-revenue .fw-kpi-value{color:#fff}
-    .fw-status-wrap{margin-top:10px;background:#fff;border:1px solid #e7ebf9;border-radius:12px;padding:12px}
-    .fw-status-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none}
-    .fw-status-item{border:1px solid #edf0fb;border-radius:10px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center}
-    .fw-status-name{text-transform:capitalize;color:#6f7a9d}
-    .fw-status-total{font-weight:700;color:#1f264a}
+    .fw-status-wrap{margin-top:16px;background:#fff;border:1px solid #e8ecf1;border-radius:14px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+    .fw-status-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0;padding:0;list-style:none}
+    .fw-status-item{border:1px solid #f0f4f8;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;background:#fafbfc}
+    .fw-status-name{text-transform:capitalize;color:#475569;font-size:13px;font-weight:500}
+    .fw-status-total{font-weight:700;color:#1e293b;font-size:16px}
     @media (max-width:1100px){.fw-admin-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.fw-status-list{grid-template-columns:1fr}}
+    @media (max-width:768px){.fw-admin-strip{padding:16px}.fw-admin-title{font-size:22px}.fw-admin-kpis{grid-template-columns:1fr}}
   </style>
 {% endblock %}
 
 {% block result_list %}
   <section class="fw-admin-strip">
-    <h2 class="fw-admin-title">SaaS Dashboard UI Kit</h2>
+    <h2 class=\"fw-admin-title\">Orders</h2>
     <div class="fw-admin-kpis">
       <article class="fw-kpi">
         <div class="fw-kpi-label">Orders</div>

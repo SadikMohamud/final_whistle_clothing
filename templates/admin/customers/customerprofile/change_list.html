@@ -3,24 +3,25 @@
 {% block extrahead %}
   {{ block.super }}
   <style>
-    .fw-profile-strip{margin:10px 0 16px;padding:18px;border-radius:16px;background:linear-gradient(135deg,#f7f8ff 0,#f2f5ff 100%);border:1px solid #e4e9ff}
-    .fw-profile-title{margin:0 0 12px;font-size:30px;line-height:1.1;color:#1d2448;letter-spacing:-.02em}
-    .fw-profile-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-    .fw-profile-kpi{background:#fff;border:1px solid #e7ebf9;border-radius:12px;padding:12px}
-    .fw-profile-kpi .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7b86ab;margin-bottom:8px}
-    .fw-profile-kpi .value{font-size:24px;font-weight:700;color:#1f264a;line-height:1}
+    .fw-profile-strip{margin:12px 0 20px;padding:24px;border-radius:16px;background:linear-gradient(135deg,#f8fafb 0,#f3f6f9 100%);border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.02)}
+    .fw-profile-title{margin:0 0 16px;font-size:28px;line-height:1.14;color:#0f172a;letter-spacing:-.025em;font-weight:600}
+    .fw-profile-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .fw-profile-kpi{background:#fff;border:1px solid #e8ecf1;border-radius:14px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+    .fw-profile-kpi .label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:8px;font-weight:600}
+    .fw-profile-kpi .value{font-size:28px;font-weight:700;color:#1e293b;line-height:1.1}
     @media (max-width:1100px){.fw-profile-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:768px){.fw-profile-strip{padding:16px}.fw-profile-title{font-size:22px}.fw-profile-kpis{grid-template-columns:1fr}}
   </style>
 {% endblock %}
 
 {% block result_list %}
   <section class="fw-profile-strip">
-    <h2 class="fw-profile-title">SaaS Dashboard UI Kit</h2>
+    <h2 class="fw-profile-title">Customers</h2>
     <div class="fw-profile-kpis">
       <article class="fw-profile-kpi"><div class="label">Total Customers</div><div class="value">{{ total_customers }}</div></article>
       <article class="fw-profile-kpi"><div class="label">New (7 Days)</div><div class="value">{{ new_customers_7_days }}</div></article>
       <article class="fw-profile-kpi"><div class="label">New (30 Days)</div><div class="value">{{ new_customers_30_days }}</div></article>
-      <article class="fw-profile-kpi"><div class="label">Export Ready</div><div class="value">CSV</div></article>
+      <article class="fw-profile-kpi"><div class="label">Total Revenue</div><div class="value">—</div></article>
     </div>
   </section>
   {{ block.super }}
