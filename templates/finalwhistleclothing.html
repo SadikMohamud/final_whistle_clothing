@@ -252,6 +252,9 @@
 
 <!-- NAV -->
 <nav>
+  <button class="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="mobileNavPanel" aria-label="Toggle navigation">
+    <span></span><span></span><span></span>
+  </button>
   <div class="nav-left">
     <a href="{% url 'collection_view' 'all' %}" data-i18n="nav_shop">Shop</a>
     <a href="{% url 'collection_view' 'all' %}#collections" data-i18n="nav_collections">Collecties</a>
@@ -267,6 +270,35 @@
     {% endif %}
     <button type="button" id="langToggle" class="toggle-chip">NL</button>
     <button type="button" id="themeToggle" class="toggle-chip" data-i18n="theme_dark">Dark</button>
+  </div>
+  <div class="mobile-nav-panel" id="mobileNavPanel" hidden>
+    <div class="mobile-nav-group is-open">
+      <button type="button" class="mobile-nav-group-btn" aria-expanded="true">
+        Shop
+      </button>
+      <div class="mobile-nav-group-body">
+        <a href="{% url 'collection_view' 'all' %}" data-i18n="nav_shop">Shop</a>
+        <a href="{% url 'collection_view' 'all' %}#collections" data-i18n="nav_collections">Collecties</a>
+        <a href="#drops" data-i18n="nav_drops">Drops</a>
+      </div>
+    </div>
+    <div class="mobile-nav-group">
+      <button type="button" class="mobile-nav-group-btn" aria-expanded="false">
+        Account
+      </button>
+      <div class="mobile-nav-group-body">
+        <a href="{% url 'search' %}" data-i18n="nav_search">Zoeken</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'customer_logout' %}" data-i18n="nav_logout">Logout</a>
+        {% else %}
+        <a href="{% url 'customer_login' %}?force=1&next={% url 'customer_profile' %}" data-i18n="nav_login">Log in</a>
+        {% endif %}
+        <div class="mobile-nav-controls">
+          <button type="button" class="toggle-chip" data-mobile-lang-toggle>NL</button>
+          <button type="button" class="toggle-chip" data-mobile-theme-toggle>Dark</button>
+        </div>
+      </div>
+    </div>
   </div>
 </nav>
 
