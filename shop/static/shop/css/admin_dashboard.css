@@ -315,24 +315,26 @@ a:hover {
 }
 
 .object-tools a.addlink {
-  background: var(--blue-primary);
+  background: #dc2626;
   color: white;
-  border-color: var(--blue-primary);
+  border-color: #dc2626;
+  font-weight: 600;
 }
 
 .object-tools a.addlink:hover {
-  background: #4c5cc4;
-  border-color: #4c5cc4;
+  background: #991b1b;
+  border-color: #991b1b;
 }
 
-.object-tools a.deletelink {
-  background: #fef2f2;
-  color: #dc2626;
+.object-tools a.exportlink {
+  color: #dc2626 !important;
+  font-weight: 600;
   border-color: #fecaca;
 }
 
-.object-tools a.deletelink:hover {
+.object-tools a.exportlink:hover {
   background: #fee2e2;
+  color: #991b1b !important;
   border-color: #f87171;
 }
 
