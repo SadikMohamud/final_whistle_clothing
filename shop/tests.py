@@ -1,5 +1,10 @@
+from unittest.mock import patch
+
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.contrib.auth import get_user_model
+
+from .models import HomepageCard
 
 
 @override_settings(
@@ -87,3 +92,38 @@ class LanguageMiddlewareTests(TestCase):
 		self.assertContains(response, "Terms of Service")
 		self.assertContains(response, "Overview")
 		self.assertContains(response, "Governing law and changes")
+
+
+@override_settings(
+	STORAGES={
+		"default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+		"staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+	},
+)
+class HomepageHeroCardTests(TestCase):
+	def test_homepage_uses_admin_managed_hero_card(self):
+		HomepageCard.objects.create(
+			title="Hero One",
+			subtitle="Hero subtitle",
+			price_label="FWC",
+			is_active=True,
+			sort_order=0,
+			image=SimpleUploadedFile("hero-one.jpg", b"hero-image", content_type="image/jpeg"),
+		)
+		non_hero = HomepageCard.objects.create(
+			title="Card Two",
+			subtitle="Second card",
+			price_label="FWC",
+			is_active=True,
+			sort_order=1,
+		)
+
+		with patch("shop.views.fetch_storefront_products", return_value=[]), patch(
+			"shop.views.fetch_products_by_query", return_value=[]
+		):
+			response = self.client.get("/")
+
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.context["hero_card"].title, "Hero One")
+		self.assertEqual(len(response.context["homepage_cards"]), 1)
+		self.assertEqual(response.context["homepage_cards"][0].id, non_hero.id)

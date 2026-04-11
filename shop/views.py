@@ -68,12 +68,18 @@ def home(request):
     if search_term:
         search_results = fetch_products_by_query(search_term, limit=20)
 
-    homepage_cards = list(HomepageCard.objects.filter(is_active=True)[:8])
+    homepage_cards_qs = HomepageCard.objects.filter(is_active=True).order_by("sort_order", "-created_at")
+    hero_card = homepage_cards_qs.filter(image__isnull=False).first()
+    if hero_card:
+        homepage_cards = list(homepage_cards_qs.exclude(pk=hero_card.pk)[:8])
+    else:
+        homepage_cards = list(homepage_cards_qs[:8])
     context = {
         "products": products,
         "search_term": search_term,
         "search_results": search_results,
         "homepage_cards": homepage_cards,
+        "hero_card": hero_card,
         "site_url": settings.SEO_CONFIG["SITE_URL"],
         "organization": settings.SEO_CONFIG["ORGANIZATION"],
         "current_lang": getattr(request, "fwc_lang", "nl"),

@@ -304,7 +304,12 @@
 
 <!-- HERO -->
 <section class="hero" data-parallax-root>
+  {% if hero_card and hero_card.image %}
+  {% optimized_image_url hero_card.image.url 1600 as hero_hero_img_url %}
+  <div class="hero-bg parallax-layer" data-parallax-speed="-0.08" data-parallax-pointer="0.45" style="background-image:linear-gradient(to bottom,rgba(8,8,8,0.18) 0,rgba(8,8,8,0.82) 100%),url('{{ hero_hero_img_url }}');background-size:cover;background-position:center;"></div>
+  {% else %}
   <div class="hero-bg parallax-layer" data-parallax-speed="-0.08" data-parallax-pointer="0.45"></div>
+  {% endif %}
   <div class="hero-geo parallax-layer" data-parallax-speed="-0.16" data-parallax-pointer="0.75">
     <div class="hero-circle-inner parallax-layer" data-parallax-speed="-0.22" data-parallax-pointer="1.1"></div>
   </div>
