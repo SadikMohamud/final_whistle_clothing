@@ -1,6 +1,5 @@
-@media(min-width:900px){.info-card{grid-column:span 6}.info-contact-panel{grid-template-columns:.9fr 1.1fr;align-items:start}}
-
 .mobile-nav-toggle,.mobile-nav-panel{display:none}
+.mobile-nav-panel[hidden]{display:none !important}
 @media(max-width:1099px){
 	nav{position:sticky;top:0;display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:auto;min-height:64px;gap:12px;padding:12px 16px}
 	.nav-logo{grid-column:2;justify-self:center;order:0}
