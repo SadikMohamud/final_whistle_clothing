@@ -9,9 +9,21 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="{% static 'shop/css/site.css' %}">
+	<style>
+		.page-loader-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.72);z-index:99999;backdrop-filter:blur(2px)}
+		.page-loader-overlay.is-active{display:flex}
+		.loader{width:min(400px,88vw);height:32px;background-color:#000;position:relative;overflow:hidden;border:3px solid #fff}
+		.progress{width:0;height:100%;background-color:#fff;position:absolute;top:0;left:0;animation:progress-animation 3s ease-in-out forwards infinite}
+		.progress::after{content:attr(data-percentage);position:absolute;top:50%;left:50%;font-weight:700;transform:translate(-50%,-50%);font-size:1rem;color:#000;animation:percentage-animation 3s ease-in-out forwards infinite}
+		@keyframes progress-animation{0%{width:0}25%{width:25%}50%{width:50%}75%{width:75%}100%{width:100%}}
+		@keyframes percentage-animation{0%{content:"0%"}25%{content:"25%"}50%{content:"50%"}75%{content:"75%"}100%{content:"100%"}}
+	</style>
 	{% block extra_head %}{% endblock %}
 </head>
 <body>
+	<div id="pageLoader" class="page-loader-overlay" aria-hidden="true">
+		<div class="loader"><div class="progress" data-percentage="100%"></div></div>
+	</div>
 	{% if messages %}
 		<div style="max-width:960px;margin:18px auto 0;padding:0 16px;display:grid;gap:8px;">
 			{% for message in messages %}
@@ -21,6 +33,28 @@
 	{% endif %}
 	{% block content %}{% endblock %}
 	<script src="{% static 'shop/js/site.js' %}"></script>
+	<script>
+		(function(){
+			const overlay=document.getElementById('pageLoader');
+			if(!overlay){return;}
+			const show=()=>overlay.classList.add('is-active');
+			const hide=()=>overlay.classList.remove('is-active');
+			const isInternalLink=(a)=>{try{const url=new URL(a.href,window.location.origin);return url.origin===window.location.origin&&url.pathname+url.search+url.hash!==window.location.pathname+window.location.search+window.location.hash;}catch(_){return false;}};
+			document.addEventListener('click',function(e){
+				if(e.defaultPrevented||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey){return;}
+				const a=e.target.closest('a[href]');
+				if(!a){return;}
+				if(a.target&&a.target!=='_self'){return;}
+				if(a.hasAttribute('download')){return;}
+				const href=a.getAttribute('href')||'';
+				if(href.startsWith('#')||href.startsWith('mailto:')||href.startsWith('tel:')||href.startsWith('javascript:')){return;}
+				if(isInternalLink(a)){show();}
+			},true);
+			document.addEventListener('submit',function(){show();},true);
+			window.addEventListener('pageshow',hide);
+			window.addEventListener('DOMContentLoaded',hide);
+		})();
+	</script>
 	{% block extra_scripts %}{% endblock %}
 </body>
 </html>
