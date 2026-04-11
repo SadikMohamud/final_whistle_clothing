@@ -258,6 +258,7 @@ class CustomerAddressAdmin(admin.ModelAdmin):
         'city',
     )
     readonly_fields = ('created_at', 'updated_at')
+    actions = ('export_addresses_csv',)
     fieldsets = (
         ('Address Type', {
             'fields': ('customer', 'address_type', 'is_default')
@@ -273,6 +274,20 @@ class CustomerAddressAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                'export-all-csv/',
+                self.admin_site.admin_view(self.export_all_addresses_csv_view),
+                name='customers_customeraddress_export_all_csv',
+            ),
+        ]
+        return custom_urls + urls
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('customer', 'customer__user')
     
     def customer_email(self, obj):
         return obj.customer.user.email
@@ -281,6 +296,47 @@ class CustomerAddressAdmin(admin.ModelAdmin):
     def full_address_display(self, obj):
         return obj.get_full_address()[:50] + '...' if len(obj.get_full_address()) > 50 else obj.get_full_address()
     full_address_display.short_description = 'Address'
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['export_all_addresses_url'] = reverse('admin:customers_customeraddress_export_all_csv')
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def _export_addresses_to_csv_response(self, queryset, filename):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        writer = csv.writer(response)
+        writer.writerow([
+            'customer_email', 'address_type', 'first_name', 'last_name', 'email', 'phone',
+            'street_address', 'apartment_suite', 'postal_code', 'city', 'country',
+            'is_default', 'created_at',
+        ])
+
+        for address in queryset.select_related('customer', 'customer__user'):
+            writer.writerow([
+                address.customer.user.email,
+                address.get_address_type_display(),
+                address.first_name,
+                address.last_name,
+                address.email,
+                address.phone,
+                address.street_address,
+                address.apartment_suite,
+                address.postal_code,
+                address.city,
+                address.country,
+                'Yes' if address.is_default else 'No',
+                address.created_at.isoformat() if address.created_at else '',
+            ])
+        return response
+
+    @admin.action(description='Export selected addresses to CSV')
+    def export_addresses_csv(self, request, queryset):
+        return self._export_addresses_to_csv_response(queryset, 'customer_addresses_selected.csv')
+
+    def export_all_addresses_csv_view(self, request):
+        queryset = self.get_queryset(request)
+        return self._export_addresses_to_csv_response(queryset, 'customer_addresses_all.csv')
 
 
 @admin.register(CustomerOrder)
@@ -443,14 +499,61 @@ class CustomerWishlistAdmin(admin.ModelAdmin):
     list_filter = ('updated_at', 'created_at')
     search_fields = ('customer__user__email',)
     readonly_fields = ('created_at', 'updated_at')
+    actions = ('export_wishlists_csv',)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                'export-all-csv/',
+                self.admin_site.admin_view(self.export_all_wishlists_csv_view),
+                name='customers_customerwishlist_export_all_csv',
+            ),
+        ]
+        return custom_urls + urls
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('customer', 'customer__user')
     
     def customer_email(self, obj):
         return obj.customer.user.email
     customer_email.short_description = 'Customer'
     
     def item_count(self, obj):
-        return len(obj.items)
+        return len(obj.items) if obj.items else 0
     item_count.short_description = 'Items'
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['export_all_wishlists_url'] = reverse('admin:customers_customerwishlist_export_all_csv')
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def _export_wishlists_to_csv_response(self, queryset, filename):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        writer = csv.writer(response)
+        writer.writerow([
+            'customer_email', 'item_count', 'items', 'updated_at', 'created_at',
+        ])
+
+        for wishlist in queryset.select_related('customer', 'customer__user'):
+            items_str = '; '.join([str(item) for item in wishlist.items]) if wishlist.items else ''
+            writer.writerow([
+                wishlist.customer.user.email,
+                len(wishlist.items) if wishlist.items else 0,
+                items_str,
+                wishlist.updated_at.isoformat() if wishlist.updated_at else '',
+                wishlist.created_at.isoformat() if wishlist.created_at else '',
+            ])
+        return response
+
+    @admin.action(description='Export selected wishlists to CSV')
+    def export_wishlists_csv(self, request, queryset):
+        return self._export_wishlists_to_csv_response(queryset, 'customer_wishlists_selected.csv')
+
+    def export_all_wishlists_csv_view(self, request):
+        queryset = self.get_queryset(request)
+        return self._export_wishlists_to_csv_response(queryset, 'customer_wishlists_all.csv')
 
 
 @admin.register(CustomerNotification)
