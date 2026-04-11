@@ -1,4 +1,5 @@
 {% load static %}
+{% load image_optim %}
 <!DOCTYPE html>
 <html lang="en" data-lang="en">
 <head>
@@ -332,7 +333,9 @@
       rel="noopener noreferrer"
     >
       {% if card.image %}
-      <img class="product-img" src="{{ card.image.url }}" alt="{{ card.title }} - Dutch streetwear" loading="lazy" decoding="async">
+      {% optimized_image_url card.image.url 640 as card_img_url %}
+      {% responsive_image_srcset card.image.url "320,480,640,960" as card_img_srcset %}
+      <img class="product-img" src="{{ card_img_url }}" srcset="{{ card_img_srcset }}" sizes="(max-width: 768px) 92vw, (max-width: 1200px) 48vw, 24vw" alt="{{ card.title }} - Dutch streetwear" loading="lazy" decoding="async">
       {% else %}
       <img
         class="product-img"
@@ -356,7 +359,9 @@
       rel="noopener noreferrer"
     >
       {% if product.image_url %}
-      <img class="product-img" src="{{ product.image_url }}" alt="{{ product.title }} - Dutch streetwear" loading="lazy" decoding="async">
+      {% optimized_image_url product.image_url 640 as product_img_url %}
+      {% responsive_image_srcset product.image_url "320,480,640,960" as product_img_srcset %}
+      <img class="product-img" src="{{ product_img_url }}" srcset="{{ product_img_srcset }}" sizes="(max-width: 768px) 92vw, (max-width: 1200px) 48vw, 24vw" alt="{{ product.title }} - Dutch streetwear" loading="lazy" decoding="async">
       {% else %}
       <img
         class="product-img"

@@ -1,4 +1,5 @@
 {% extends "shop/base.html" %}
+{% load image_optim %}
 
 {% block title %}{{ product.title }} | Final Whistle Clothing{% endblock %}
 
@@ -8,11 +9,15 @@
   <section style="display:grid;gap:24px;grid-template-columns:1fr;">
     <div>
       {% if product.images %}
-        <img src="{{ product.images.0.url }}" alt="{{ product.images.0.alt }}" fetchpriority="high" loading="eager" decoding="async" style="width:100%;max-height:620px;object-fit:cover;border:1px solid var(--border);">
+        {% optimized_image_url product.images.0.url 1200 as hero_image_url %}
+        {% responsive_image_srcset product.images.0.url "480,768,960,1200,1600" as hero_image_srcset %}
+        <img src="{{ hero_image_url }}" srcset="{{ hero_image_srcset }}" sizes="(max-width: 900px) 94vw, 56vw" alt="{{ product.images.0.alt }}" fetchpriority="high" loading="eager" decoding="async" style="width:100%;max-height:620px;object-fit:cover;border:1px solid var(--border);">
         {% if product.images|length > 1 %}
           <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px;">
             {% for image in product.images|slice:'1:' %}
-              <img src="{{ image.url }}" alt="{{ image.alt }}" loading="lazy" decoding="async" style="width:100%;height:110px;object-fit:cover;border:1px solid var(--border);">
+              {% optimized_image_url image.url 220 as thumb_image_url %}
+              {% responsive_image_srcset image.url "120,180,220,300" as thumb_image_srcset %}
+              <img src="{{ thumb_image_url }}" srcset="{{ thumb_image_srcset }}" sizes="(max-width: 900px) 22vw, 110px" alt="{{ image.alt }}" loading="lazy" decoding="async" style="width:100%;height:110px;object-fit:cover;border:1px solid var(--border);">
             {% endfor %}
           </div>
         {% endif %}

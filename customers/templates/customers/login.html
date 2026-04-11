@@ -154,25 +154,9 @@
     (function () {
       const profileUrl = "{% url 'customer_profile' %}";
 
-      function guardAuthPage() {
-        fetch(profileUrl, { credentials: "same-origin" })
-          .then(function (response) {
-            if (response.ok) {
-              window.location.replace(profileUrl);
-            }
-          })
-          .catch(function () {
-            // Ignore network errors and stay on page.
-          });
-      }
-
       if ("{{ request.user.is_authenticated|yesno:'1,0' }}" === "1") {
         window.location.replace(profileUrl);
-        return;
       }
-
-      window.addEventListener("pageshow", guardAuthPage);
-      guardAuthPage();
     })();
   </script>
 </body>
