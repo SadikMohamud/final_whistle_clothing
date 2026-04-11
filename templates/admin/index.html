@@ -1,0 +1,101 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static admin_dashboard %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    .saas-admin-shell{padding:10px 0 24px}
+    .saas-admin-hero{padding:24px;border:1px solid #e5eafc;border-radius:18px;background:radial-gradient(circle at 50% -20%,#ffffff 0,#f7f8ff 65%,#f1f3ff 100%);margin-bottom:14px;text-align:center}
+    .saas-admin-mark{display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;font-weight:700;color:#222b52}
+    .saas-admin-dot{width:36px;height:36px;border-radius:999px;background:#5b5cf0;display:inline-block;position:relative}
+    .saas-admin-dot:after{content:"";position:absolute;left:10px;top:10px;width:16px;height:16px;border:2px solid rgba(255,255,255,.9);border-top-color:transparent;border-left-color:transparent;border-radius:100%}
+    .saas-admin-title{margin:0;font-size:52px;line-height:1.02;letter-spacing:-.02em;color:#11183c}
+    .saas-admin-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
+    .saas-kpi{background:#fff;border:1px solid #e8ecfb;border-radius:12px;padding:12px;text-align:left}
+    .saas-kpi .label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#7a83a4;margin-bottom:8px}
+    .saas-kpi .value{font-size:24px;line-height:1;color:#1f274b;font-weight:700}
+    .saas-kpi.revenue{background:linear-gradient(135deg,#5d63f3 0,#7d89ff 100%);border-color:#5d63f3}
+    .saas-kpi.revenue .label,.saas-kpi.revenue .value{color:#fff}
+    .saas-admin-grid{display:grid;grid-template-columns:1.4fr .6fr;gap:10px;margin-bottom:10px}
+    .saas-panel{background:#fff;border:1px solid #e8ecfb;border-radius:14px;padding:14px}
+    .saas-panel h3{margin:0 0 10px;font-size:16px;color:#222a50}
+    .line-chart{height:220px;border-radius:12px;background:linear-gradient(180deg,#f9faff 0,#ffffff 100%);border:1px solid #edf0fb;position:relative;overflow:hidden}
+    .line-chart svg{position:absolute;inset:0;width:100%;height:100%}
+    .donut{width:190px;height:190px;margin:8px auto;border-radius:999px;background:conic-gradient(#5f83ff 0 62%,#f1c85c 62% 82%,#ff9a6f 82% 100%);position:relative}
+    .donut:after{content:"";position:absolute;inset:28px;background:#fff;border-radius:999px}
+    .donut-label{position:relative;margin-top:-118px;text-align:center;font-weight:700;color:#1f274b;font-size:28px}
+    .donut-sub{text-align:center;color:#6f789b;font-size:13px;margin-top:2px}
+    .saas-apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .saas-app-card{background:#fff;border:1px solid #e8ecfb;border-radius:14px;padding:12px}
+    .saas-app-card h4{margin:0 0 8px;font-size:15px;color:#1f274b}
+    .saas-app-card ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+    .saas-app-card a{color:#5760f0;text-decoration:none;font-weight:600}
+    @media(max-width:1200px){.saas-admin-title{font-size:42px}.saas-admin-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.saas-admin-grid{grid-template-columns:1fr}.saas-apps{grid-template-columns:1fr}}
+  </style>
+{% endblock %}
+
+{% block content %}
+  {% admin_total_revenue as total_revenue %}
+  {% admin_revenue_30_days as revenue_30_days %}
+  {% admin_total_orders as total_orders %}
+  {% admin_total_customers as total_customers %}
+
+  <div class="saas-admin-shell">
+    <section class="saas-admin-hero">
+      <div class="saas-admin-mark"><span class="saas-admin-dot"></span><span>Base</span></div>
+      <h1 class="saas-admin-title">SaaS Dashboard UI Kit</h1>
+      <div class="saas-admin-kpis">
+        <article class="saas-kpi"><div class="label">Total Customers</div><div class="value">{{ total_customers }}</div></article>
+        <article class="saas-kpi"><div class="label">Total Orders</div><div class="value">{{ total_orders }}</div></article>
+        <article class="saas-kpi revenue"><div class="label">Sales Revenue</div><div class="value">EUR {{ total_revenue }}</div></article>
+        <article class="saas-kpi"><div class="label">Revenue 30 Days</div><div class="value">EUR {{ revenue_30_days }}</div></article>
+      </div>
+    </section>
+
+    <section class="saas-admin-grid">
+      <article class="saas-panel">
+        <h3>Reports</h3>
+        <div class="line-chart" aria-hidden="true">
+          <svg viewBox="0 0 100 40" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lineA" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#6fb8ff"/>
+                <stop offset="1" stop-color="#9966ff"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,25 C8,35 15,14 24,20 C33,26 38,10 46,18 C54,26 60,8 67,16 C74,24 80,10 87,18 C93,26 97,9 100,12" fill="none" stroke="url(#lineA)" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </article>
+
+      <article class="saas-panel">
+        <h3>Analytics</h3>
+        <div class="donut"></div>
+        <div class="donut-label">80%</div>
+        <div class="donut-sub">Transactions</div>
+      </article>
+    </section>
+
+    <section class="saas-apps">
+      {% for app in app_list %}
+        <article class="saas-app-card">
+          <h4>{{ app.name }}</h4>
+          <ul>
+            {% for model in app.models %}
+              <li>
+                {% if model.admin_url %}
+                  <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                {% else %}
+                  {{ model.name }}
+                {% endif %}
+                {% if model.add_url %}
+                  · <a href="{{ model.add_url }}">Add</a>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </article>
+      {% endfor %}
+    </section>
+  </div>
+{% endblock %}
