@@ -69,7 +69,10 @@ def home(request):
         search_results = fetch_products_by_query(search_term, limit=20)
 
     homepage_cards_qs = HomepageCard.objects.filter(is_active=True).order_by("sort_order", "-created_at")
-    hero_card = homepage_cards_qs.filter(image__isnull=False).first()
+    hero_card = homepage_cards_qs.filter(is_hero=True, image__isnull=False).first()
+    if hero_card is None:
+        hero_card = homepage_cards_qs.filter(image__isnull=False).first()
+
     if hero_card:
         homepage_cards = list(homepage_cards_qs.exclude(pk=hero_card.pk)[:8])
     else:

@@ -107,6 +107,7 @@ class HomepageHeroCardTests(TestCase):
 			subtitle="Hero subtitle",
 			price_label="FWC",
 			is_active=True,
+			is_hero=True,
 			sort_order=0,
 			image=SimpleUploadedFile("hero-one.jpg", b"hero-image", content_type="image/jpeg"),
 		)
@@ -127,3 +128,28 @@ class HomepageHeroCardTests(TestCase):
 		self.assertEqual(response.context["hero_card"].title, "Hero One")
 		self.assertEqual(len(response.context["homepage_cards"]), 1)
 		self.assertEqual(response.context["homepage_cards"][0].id, non_hero.id)
+
+	def test_falls_back_to_first_image_when_no_hero_flag_is_set(self):
+		first = HomepageCard.objects.create(
+			title="First Image",
+			subtitle="First",
+			price_label="FWC",
+			is_active=True,
+			sort_order=0,
+			image=SimpleUploadedFile("first.jpg", b"first-image", content_type="image/jpeg"),
+		)
+		HomepageCard.objects.create(
+			title="Second Card",
+			subtitle="Second",
+			price_label="FWC",
+			is_active=True,
+			sort_order=1,
+		)
+
+		with patch("shop.views.fetch_storefront_products", return_value=[]), patch(
+			"shop.views.fetch_products_by_query", return_value=[]
+		):
+			response = self.client.get("/")
+
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.context["hero_card"].id, first.id)

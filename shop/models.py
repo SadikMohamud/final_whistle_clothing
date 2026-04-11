@@ -8,6 +8,7 @@ class HomepageCard(models.Model):
     cta_url = models.CharField(max_length=500, blank=True)
     image = models.ImageField(upload_to='homepage/cards/', blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    is_hero = models.BooleanField(default=False)
     sort_order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
