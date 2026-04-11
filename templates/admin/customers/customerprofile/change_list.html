@@ -1,27 +1,29 @@
 {% extends "admin/change_list.html" %}
 
-{% block content_title %}
-  <div class="dashboard-kit-wrap">
-    <h1 class="dashboard-kit-title">SaaS Dashboard UI Kit</h1>
-    <div class="dashboard-kpis">
-      <article class="dashboard-kpi">
-        <div class="dashboard-kpi-label">Total Customers</div>
-        <div class="dashboard-kpi-value">{{ total_customers }}</div>
-      </article>
-      <article class="dashboard-kpi">
-        <div class="dashboard-kpi-label">New (7 days)</div>
-        <div class="dashboard-kpi-value">{{ new_customers_7_days }}</div>
-      </article>
-      <article class="dashboard-kpi">
-        <div class="dashboard-kpi-label">New (30 days)</div>
-        <div class="dashboard-kpi-value">{{ new_customers_30_days }}</div>
-      </article>
-      <article class="dashboard-kpi">
-        <div class="dashboard-kpi-label">Data Export</div>
-        <div class="dashboard-kpi-value">CSV</div>
-      </article>
+{% block extrahead %}
+  {{ block.super }}
+  <style>
+    .fw-profile-strip{margin:10px 0 16px;padding:18px;border-radius:16px;background:linear-gradient(135deg,#f7f8ff 0,#f2f5ff 100%);border:1px solid #e4e9ff}
+    .fw-profile-title{margin:0 0 12px;font-size:30px;line-height:1.1;color:#1d2448;letter-spacing:-.02em}
+    .fw-profile-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .fw-profile-kpi{background:#fff;border:1px solid #e7ebf9;border-radius:12px;padding:12px}
+    .fw-profile-kpi .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7b86ab;margin-bottom:8px}
+    .fw-profile-kpi .value{font-size:24px;font-weight:700;color:#1f264a;line-height:1}
+    @media (max-width:1100px){.fw-profile-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  </style>
+{% endblock %}
+
+{% block result_list %}
+  <section class="fw-profile-strip">
+    <h2 class="fw-profile-title">SaaS Dashboard UI Kit</h2>
+    <div class="fw-profile-kpis">
+      <article class="fw-profile-kpi"><div class="label">Total Customers</div><div class="value">{{ total_customers }}</div></article>
+      <article class="fw-profile-kpi"><div class="label">New (7 Days)</div><div class="value">{{ new_customers_7_days }}</div></article>
+      <article class="fw-profile-kpi"><div class="label">New (30 Days)</div><div class="value">{{ new_customers_30_days }}</div></article>
+      <article class="fw-profile-kpi"><div class="label">Export Ready</div><div class="value">CSV</div></article>
     </div>
-  </div>
+  </section>
+  {{ block.super }}
 {% endblock %}
 
 {% block object-tools-items %}

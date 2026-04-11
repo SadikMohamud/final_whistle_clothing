@@ -1,54 +1,63 @@
 {% extends "admin/change_list.html" %}
 
-{% block content_title %}
-  <div class="dashboard-kit-wrap">
-    <h1 class="dashboard-kit-title">SaaS Dashboard UI Kit</h1>
-    <div class="dashboard-kpis">
-      <article class="dashboard-kpi">
-        <div class="dashboard-kpi-label">Orders</div>
-        <div class="dashboard-kpi-value">{{ total_orders }}</div>
+{% block extrahead %}
+  {{ block.super }}
+  <style>
+    .fw-admin-strip{margin:10px 0 16px;padding:18px;border-radius:16px;background:linear-gradient(135deg,#f7f8ff 0,#f1f4ff 100%);border:1px solid #e4e9ff}
+    .fw-admin-title{margin:0 0 12px;font-size:30px;line-height:1.1;color:#1d2448;letter-spacing:-.02em}
+    .fw-admin-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .fw-kpi{background:#fff;border:1px solid #e7ebf9;border-radius:12px;padding:12px}
+    .fw-kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7b86ab;margin-bottom:8px}
+    .fw-kpi-value{font-size:24px;font-weight:700;color:#1f264a;line-height:1}
+    .fw-revenue{background:linear-gradient(135deg,#5c62f3 0,#7784ff 100%);color:#fff;border-color:#6169f3}
+    .fw-revenue .fw-kpi-label,.fw-revenue .fw-kpi-value{color:#fff}
+    .fw-status-wrap{margin-top:10px;background:#fff;border:1px solid #e7ebf9;border-radius:12px;padding:12px}
+    .fw-status-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none}
+    .fw-status-item{border:1px solid #edf0fb;border-radius:10px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center}
+    .fw-status-name{text-transform:capitalize;color:#6f7a9d}
+    .fw-status-total{font-weight:700;color:#1f264a}
+    @media (max-width:1100px){.fw-admin-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.fw-status-list{grid-template-columns:1fr}}
+  </style>
+{% endblock %}
+
+{% block result_list %}
+  <section class="fw-admin-strip">
+    <h2 class="fw-admin-title">SaaS Dashboard UI Kit</h2>
+    <div class="fw-admin-kpis">
+      <article class="fw-kpi">
+        <div class="fw-kpi-label">Orders</div>
+        <div class="fw-kpi-value">{{ total_orders }}</div>
       </article>
-      <article class="dashboard-kpi">
-        <div class="dashboard-kpi-label">Items Sold</div>
-        <div class="dashboard-kpi-value">{{ total_items }}</div>
+      <article class="fw-kpi">
+        <div class="fw-kpi-label">Items Sold</div>
+        <div class="fw-kpi-value">{{ total_items }}</div>
       </article>
-      <article class="dashboard-kpi">
-        <div class="dashboard-kpi-label">Sales Revenue</div>
-        <div class="dashboard-kpi-value">{{ sales_currency }} {{ sales_revenue }}</div>
+      <article class="fw-kpi fw-revenue">
+        <div class="fw-kpi-label">Sales Revenue</div>
+        <div class="fw-kpi-value">{{ sales_currency }} {{ sales_revenue }}</div>
       </article>
-      <article class="dashboard-kpi">
-        <div class="dashboard-kpi-label">Last 30 Days</div>
-        <div class="dashboard-kpi-value">{{ sales_currency }} {{ revenue_30_days }}</div>
+      <article class="fw-kpi">
+        <div class="fw-kpi-label">Revenue (30 Days)</div>
+        <div class="fw-kpi-value">{{ sales_currency }} {{ revenue_30_days }}</div>
       </article>
     </div>
-
-    <div class="dashboard-grid">
-      <section class="dashboard-panel">
-        <h2 class="dashboard-panel-title">Order Status Breakdown</h2>
-        <ul class="status-list">
-          {% for row in order_status_counts %}
-            <li class="status-row">
-              <span class="status-name">{{ row.status }}</span>
-              <span class="status-total">{{ row.total }}</span>
-            </li>
-          {% empty %}
-            <li class="status-row">
-              <span class="status-name">No orders yet</span>
-              <span class="status-total">0</span>
-            </li>
-          {% endfor %}
-        </ul>
-      </section>
-
-      <section class="dashboard-panel">
-        <div class="revenue-highlight">
-          <div class="label">Total Sales Revenue</div>
-          <div class="value">{{ sales_currency }} {{ sales_revenue }}</div>
-        </div>
-        <div class="dashboard-kpi-label">This panel is style-only. All admin actions, filters, exports, and list functions remain unchanged below.</div>
-      </section>
+    <div class="fw-status-wrap">
+      <ul class="fw-status-list">
+        {% for row in order_status_counts %}
+          <li class="fw-status-item">
+            <span class="fw-status-name">{{ row.status }}</span>
+            <span class="fw-status-total">{{ row.total }}</span>
+          </li>
+        {% empty %}
+          <li class="fw-status-item">
+            <span class="fw-status-name">No orders yet</span>
+            <span class="fw-status-total">0</span>
+          </li>
+        {% endfor %}
+      </ul>
     </div>
-  </div>
+  </section>
+  {{ block.super }}
 {% endblock %}
 
 {% block object-tools-items %}
