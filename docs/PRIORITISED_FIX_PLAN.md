@@ -156,10 +156,24 @@ Suggested commit sequence:
 
 Priority: lower
 
+Status: mostly complete
+
 1. Add admin bulk actions where they are useful.
 2. Improve null handling and filters in admin tools.
 3. Clean up placeholder wording that is no longer accurate.
 4. Review content for any remaining Dutch-only defaults where English should be first.
+
+Completed in this phase:
+
+1. Added admin revenue KPIs and a custom dashboard index.
+2. Styled the entire admin shell, including sidebar, tables, forms, and action buttons.
+3. Added CSV export actions and one-click export buttons for customer profiles, orders, addresses, and wishlists.
+4. Tightened admin text/colors so the interface follows the new dashboard palette.
+
+Remaining in this phase:
+
+1. Final wording sweep for any remaining placeholder copy in admin/help text.
+2. Optional polish pass if the client wants further pixel-level adjustments.
 
 Suggested commit sequence:
 
@@ -176,6 +190,8 @@ If the goal is a client-ready release with minimal risk, I would ship in this or
 4. Cursor and frontend stability.
 5. Tests and deployment guide.
 6. Admin and content cleanup.
+
+Current repo state is already past most of item 6; the remaining work is mostly wording cleanup and any final visual polish the client requests.
 
 ## Acceptance Criteria
 
