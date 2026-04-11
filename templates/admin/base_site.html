@@ -6,8 +6,136 @@
 {% block extrastyle %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'shop/css/admin_dashboard.css' %}">
+  <style>
+    /* ADMIN LAYOUT ENHANCEMENT */
+    #container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    #content-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #sidebar + #header {
+      grid-column: 1 / -1;
+    }
+
+    /* LOGIN PAGE */
+    body.login {
+      background: linear-gradient(135deg, #f8fafb 0%, #f3f6f9 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    #login {
+      background: white;
+      border: 1px solid #e8ecf1;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 32px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    #login h1 {
+      font-size: 28px;
+      margin-bottom: 24px;
+      text-align: center;
+      color: #0f172a;
+    }
+
+    #login .submit-row {
+      border: none;
+      margin-top: 24px;
+      padding: 0;
+    }
+
+    #login input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #5a67d8;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    #login input[type="submit"]:hover {
+      background: #4c5cc4;
+    }
+
+    /* PASSWORD CHANGE FORM */
+    .password-reset-confirm,
+    .password-reset,
+    .password-change-form {
+      max-width: 500px;
+      margin: 40px auto;
+    }
+
+    /* ERROR PAGES */
+    body.error-page {
+      background: linear-gradient(135deg, #f8fafb 0%, #f3f6f9 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .error-container {
+      background: white;
+      border: 1px solid #e8ecf1;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .error-container h1 {
+      font-size: 48px;
+      color: #dc2626;
+      margin-bottom: 16px;
+    }
+
+    .error-container p {
+      color: #64748b;
+      margin-bottom: 24px;
+    }
+
+    .error-container a {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #5a67d8;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.15s ease;
+    }
+
+    .error-container a:hover {
+      background: #4c5cc4;
+    }
+  </style>
 {% endblock %}
 
 {% block branding %}
-  <h1 id="site-name"><a href="{% url 'admin:index' %}">Final Whistle Admin</a></h1>
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink: 0;">
+      <circle cx="16" cy="16" r="14" fill="#5a67d8"/>
+      <circle cx="11" cy="12" r="2" fill="white"/>
+      <circle cx="21" cy="12" r="2" fill="white"/>
+      <circle cx="16" cy="20" r="2" fill="white"/>
+      <line x1="11" y1="12" x2="16" y2="20" stroke="white" stroke-width="1.5"/>
+      <line x1="21" y1="12" x2="16" y2="20" stroke="white" stroke-width="1.5"/>
+    </svg>
+    <h1 id="site-name"><a href="{% url 'admin:index' %}" style="color: inherit; display: flex; align-items: center; gap: 8px; text-decoration: none;">Final Whistle</a></h1>
+  </div>
 {% endblock %}
