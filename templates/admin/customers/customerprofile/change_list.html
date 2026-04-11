@@ -1,5 +1,29 @@
 {% extends "admin/change_list.html" %}
 
+{% block content_title %}
+  <div class="dashboard-kit-wrap">
+    <h1 class="dashboard-kit-title">SaaS Dashboard UI Kit</h1>
+    <div class="dashboard-kpis">
+      <article class="dashboard-kpi">
+        <div class="dashboard-kpi-label">Total Customers</div>
+        <div class="dashboard-kpi-value">{{ total_customers }}</div>
+      </article>
+      <article class="dashboard-kpi">
+        <div class="dashboard-kpi-label">New (7 days)</div>
+        <div class="dashboard-kpi-value">{{ new_customers_7_days }}</div>
+      </article>
+      <article class="dashboard-kpi">
+        <div class="dashboard-kpi-label">New (30 days)</div>
+        <div class="dashboard-kpi-value">{{ new_customers_30_days }}</div>
+      </article>
+      <article class="dashboard-kpi">
+        <div class="dashboard-kpi-label">Data Export</div>
+        <div class="dashboard-kpi-value">CSV</div>
+      </article>
+    </div>
+  </div>
+{% endblock %}
+
 {% block object-tools-items %}
   <li>
     <a href="{{ export_all_profiles_url }}" class="addlink">Export all customers CSV</a>

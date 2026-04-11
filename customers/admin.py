@@ -1,10 +1,11 @@
 import csv
 from datetime import timedelta
+from decimal import Decimal
 
 from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
 from django.http import HttpResponse
 from django.urls import path, reverse
 from django.utils import timezone
@@ -200,6 +201,7 @@ class CustomerProfileAdmin(admin.ModelAdmin):
         qs = self.get_queryset(request)
         extra_context['new_customers_7_days'] = qs.filter(account_created__gte=now - timedelta(days=7)).count()
         extra_context['new_customers_30_days'] = qs.filter(account_created__gte=now - timedelta(days=30)).count()
+        extra_context['total_customers'] = qs.count()
         extra_context['export_all_profiles_url'] = reverse('admin:customers_customerprofile_export_all_csv')
         return super().changelist_view(request, extra_context=extra_context)
 
@@ -371,13 +373,26 @@ class CustomerOrderAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
+        queryset = self.get_queryset(request)
         status_counts = (
-            self.get_queryset(request)
+            queryset
             .values('status')
             .annotate(total=Count('id'))
             .order_by('status')
         )
         extra_context['order_status_counts'] = list(status_counts)
+        aggregates = queryset.aggregate(
+            total_orders=Count('id'),
+            total_items=Sum('items_count'),
+            sales_revenue=Sum('total_price'),
+        )
+        extra_context['total_orders'] = aggregates.get('total_orders') or 0
+        extra_context['total_items'] = aggregates.get('total_items') or 0
+        extra_context['sales_revenue'] = aggregates.get('sales_revenue') or Decimal('0.00')
+        extra_context['sales_currency'] = 'EUR'
+        recent_queryset = queryset.filter(ordered_at__gte=timezone.now() - timedelta(days=30))
+        recent_revenue = recent_queryset.aggregate(total=Sum('total_price')).get('total') or Decimal('0.00')
+        extra_context['revenue_30_days'] = recent_revenue
 
         if request.GET.get('show_status_summary') == '1':
             summary = ', '.join([f"{row['status']}: {row['total']}" for row in status_counts]) or 'No orders yet'

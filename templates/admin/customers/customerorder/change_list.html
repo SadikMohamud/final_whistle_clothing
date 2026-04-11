@@ -1,5 +1,56 @@
 {% extends "admin/change_list.html" %}
 
+{% block content_title %}
+  <div class="dashboard-kit-wrap">
+    <h1 class="dashboard-kit-title">SaaS Dashboard UI Kit</h1>
+    <div class="dashboard-kpis">
+      <article class="dashboard-kpi">
+        <div class="dashboard-kpi-label">Orders</div>
+        <div class="dashboard-kpi-value">{{ total_orders }}</div>
+      </article>
+      <article class="dashboard-kpi">
+        <div class="dashboard-kpi-label">Items Sold</div>
+        <div class="dashboard-kpi-value">{{ total_items }}</div>
+      </article>
+      <article class="dashboard-kpi">
+        <div class="dashboard-kpi-label">Sales Revenue</div>
+        <div class="dashboard-kpi-value">{{ sales_currency }} {{ sales_revenue }}</div>
+      </article>
+      <article class="dashboard-kpi">
+        <div class="dashboard-kpi-label">Last 30 Days</div>
+        <div class="dashboard-kpi-value">{{ sales_currency }} {{ revenue_30_days }}</div>
+      </article>
+    </div>
+
+    <div class="dashboard-grid">
+      <section class="dashboard-panel">
+        <h2 class="dashboard-panel-title">Order Status Breakdown</h2>
+        <ul class="status-list">
+          {% for row in order_status_counts %}
+            <li class="status-row">
+              <span class="status-name">{{ row.status }}</span>
+              <span class="status-total">{{ row.total }}</span>
+            </li>
+          {% empty %}
+            <li class="status-row">
+              <span class="status-name">No orders yet</span>
+              <span class="status-total">0</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="dashboard-panel">
+        <div class="revenue-highlight">
+          <div class="label">Total Sales Revenue</div>
+          <div class="value">{{ sales_currency }} {{ sales_revenue }}</div>
+        </div>
+        <div class="dashboard-kpi-label">This panel is style-only. All admin actions, filters, exports, and list functions remain unchanged below.</div>
+      </section>
+    </div>
+  </div>
+{% endblock %}
+
 {% block object-tools-items %}
   <li>
     <a href="{{ export_all_orders_url }}" class="addlink">Export all orders CSV</a>
