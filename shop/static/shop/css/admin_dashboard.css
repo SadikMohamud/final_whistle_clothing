@@ -538,9 +538,9 @@ textarea {
 }
 
 .messagelist .warning {
-  background: #fefce8;
-  border-left-color: #eab308;
-  color: #713f12;
+  background: #fef3c7;
+  border-left-color: #f59e0b;
+  color: #1f2937;
 }
 
 .messagelist .info {
